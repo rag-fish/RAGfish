@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_ragfish_hxgai" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.37.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_ragfish_hxgai" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.42.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
   <bpmn:process id="Process_HxGAI" name="Human × Generative AI Workflow" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_Human" name="Human">
@@ -15,40 +15,40 @@
         <bpmn:flowNodeRef>Gateway_QualityOK</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="StartEvent_HxGAI" name="Start" />
-    <bpmn:userTask id="UserTask_Ideate" name="Ideate &#38; Brief">
-      <bpmn:documentation>Define intent, constraints, and acceptance criteria.</bpmn:documentation>
+    <bpmn:userTask id="UserTask_Critique" name="Critique &#38; Edit">
+      <bpmn:documentation>Human review, annotate issues, add guidance.</bpmn:documentation>
     </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_HxGAI" name="Done" />
+    <bpmn:sequenceFlow id="Flow_Critique_Regenerate" sourceRef="UserTask_Critique" targetRef="ServiceTask_Regenerate" />
+    <bpmn:sequenceFlow id="Flow_Generate_Gateway" sourceRef="ServiceTask_Generate" targetRef="Gateway_QualityOK" />
+    <bpmn:sequenceFlow id="Flow_Ideate_Generate" sourceRef="UserTask_Ideate" targetRef="ServiceTask_Generate" />
+    <bpmn:sequenceFlow id="Flow_Integrate_End" sourceRef="UserTask_Integrate" targetRef="EndEvent_HxGAI" />
+    <bpmn:sequenceFlow id="Flow_Regenerate_Gateway" sourceRef="ServiceTask_Regenerate" targetRef="UserTask_Integrate" />
+    <bpmn:sequenceFlow id="Flow_Start_Ideate" sourceRef="StartEvent_HxGAI" targetRef="UserTask_Ideate" />
     <bpmn:serviceTask id="ServiceTask_Generate" name="Generate Draft">
       <bpmn:documentation>Use LLM to draft content/code based on brief.</bpmn:documentation>
       <bpmn:outgoing>Flow_Generate_Gateway</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_QualityOK" name="Quality OK?" gatewayDirection="Diverging" default="Flow_Gateway_No_Critique">
-      <bpmn:incoming>Flow_Generate_Gateway</bpmn:incoming>
-    </bpmn:exclusiveGateway>
-    <bpmn:userTask id="UserTask_Critique" name="Critique &#38; Edit">
-      <bpmn:documentation>Human review, annotate issues, add guidance.</bpmn:documentation>
+    <bpmn:userTask id="UserTask_Ideate" name="Ideate &#38; Brief">
+      <bpmn:documentation>Define intent, constraints, and acceptance criteria.</bpmn:documentation>
     </bpmn:userTask>
-    <bpmn:serviceTask id="ServiceTask_Regenerate" name="Regenerate w/ Guidance">
-      <bpmn:documentation>Regenerate using structured critique &amp; constraints.</bpmn:documentation>
-    </bpmn:serviceTask>
     <bpmn:userTask id="UserTask_Integrate" name="Integrate &#38; Publish">
       <bpmn:documentation>Integrate the accepted draft into codebase/site and publish.</bpmn:documentation>
       <bpmn:incoming>Flow_Regenerate_Gateway</bpmn:incoming>
     </bpmn:userTask>
-    <bpmn:endEvent id="EndEvent_HxGAI" name="Done" />
-    <bpmn:sequenceFlow id="Flow_Start_Ideate" sourceRef="StartEvent_HxGAI" targetRef="UserTask_Ideate" />
-    <bpmn:sequenceFlow id="Flow_Ideate_Generate" sourceRef="UserTask_Ideate" targetRef="ServiceTask_Generate" />
     <bpmn:sequenceFlow id="Flow_Gateway_No_Critique" name="No" sourceRef="Gateway_QualityOK" targetRef="UserTask_Critique">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!quality_ok}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Critique_Regenerate" sourceRef="UserTask_Critique" targetRef="ServiceTask_Regenerate" />
-    <bpmn:sequenceFlow id="Flow_Regenerate_Gateway" sourceRef="ServiceTask_Regenerate" targetRef="UserTask_Integrate" />
+    <bpmn:exclusiveGateway id="Gateway_QualityOK" name="Quality OK?" gatewayDirection="Diverging" default="Flow_Gateway_No_Critique">
+      <bpmn:incoming>Flow_Generate_Gateway</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ServiceTask_Regenerate" name="Regenerate w/ Guidance">
+      <bpmn:documentation>Regenerate using structured critique &amp; constraints.</bpmn:documentation>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_HxGAI" name="Start" />
     <bpmn:sequenceFlow id="Flow_Gateway_Yes_Integrate" name="Yes" sourceRef="Gateway_QualityOK" targetRef="UserTask_Integrate">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${quality_ok}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Integrate_End" sourceRef="UserTask_Integrate" targetRef="EndEvent_HxGAI" />
-    <bpmn:sequenceFlow id="Flow_Generate_Gateway" sourceRef="ServiceTask_Generate" targetRef="Gateway_QualityOK" />
     <bpmn:textAnnotation id="Note_SingleHuman">
       <bpmn:text>Single human editor remains decisive (taste, constraints, integration).</bpmn:text>
     </bpmn:textAnnotation>

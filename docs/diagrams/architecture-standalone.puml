@@ -1,0 +1,78 @@
+@startuml
+' Simplified architecture diagram without external dependencies
+left to right direction
+skinparam defaultTextAlignment center
+skinparam rectangleBorderThickness 2
+skinparam rectangleFontStyle bold
+skinparam shadowing false
+
+' Styling
+skinparam rectangle {
+    BackgroundColor<<client>> #E6F3FF
+    BorderColor<<client>> #4682B4
+    BackgroundColor<<boundary>> #FFE4B5
+    BorderColor<<boundary>> #FF8C00
+    BorderThickness<<boundary>> 3
+    BackgroundColor<<execution>> #E6F3FF
+    BorderColor<<execution>> #4682B4
+    BackgroundColor<<knowledge>> #FFFAF0
+    BorderColor<<knowledge>> #CD853F
+}
+
+' Client Layer
+rectangle "==Client Layer\n" as ClientLayer <<client>> {
+    component "**Noesis Noema**\n(Client-side Router)\n\n• Routing\n• Policy Decision\n• Human Interaction" as client
+}
+
+' Invocation Boundary
+rectangle "==Invocation Boundary\n" as BoundaryLayer <<boundary>> {
+    component "**noema-agent API**\n(Responsibility Border)" as boundary
+}
+
+' Execution Layer
+rectangle "==Execution Layer\n" as ExecutionLayer <<execution>> {
+    component "**noema-agent**\n(Dockerized Executor)\n\nConstrained Execution Only\n(No Decision Making)" as execution
+}
+
+' Knowledge Layer
+rectangle "==Knowledge Layer\n" as KnowledgeLayer <<knowledge>> {
+    storage "**RAGpack Store**\n(Model-agnostic Knowledge)\n\nNo Behavior" as knowledge
+}
+
+' Relationships
+ClientLayer -right->> BoundaryLayer : **request**\n//policy-routed invocation//
+BoundaryLayer -right->> ExecutionLayer : **constrained**\n//execution request//
+ExecutionLayer -right->> KnowledgeLayer : **retrieve**\n//reference//
+
+' Title
+title RAGfish / Noema Architecture\nArchitecture Constitution: AI is not the Subject
+
+' Notes
+note bottom of ClientLayer
+  **Responsibility:**
+  • Route requests
+  • Make policy decisions
+  • Handle human interaction
+end note
+
+note bottom of BoundaryLayer
+  **Boundary:**
+  Separates decision-making
+  from execution
+end note
+
+note bottom of ExecutionLayer
+  **Responsibility:**
+  • Execute constrained tasks
+  • No decision authority
+  • Stateless operation
+end note
+
+note bottom of KnowledgeLayer
+  **Responsibility:**
+  • Store knowledge
+  • Provide references
+  • No autonomous behavior
+end note
+
+@enduml

@@ -1,141 +1,246 @@
 # RAGfish
 
-![RAGfish Logo](docs/assets/og-image.png)
+**System architecture and specifications for human-accountable RAG systems**
 
-- 🎮 Discord: [https://discord.gg/pcPuWcbY](https://discord.gg/pcPuWcbY)
+---
 
-## 🎥 Demo Video
+## What This Repository Is
 
-- 📺 YouTube: [https://www.youtube.com/@VibrantEinstein](https://www.youtube.com/@VibrantEinstein)
+RAGfish is an **architectural specification repository** for the Noesis Noema ecosystem.
 
-[![Watch the Demo](https://img.youtube.com/vi/VzCrfXZyfss/0.jpg)](https://youtube.com/shorts/VzCrfXZyfss?feature=share)
+This repository defines:
+- System architecture and component boundaries
+- Operational constraints and validation requirements
+- API contracts and responsibility models
+- Knowledge representation formats (RAGpack)
 
-A deep private RAG core for macOS/iOS, inspired by the depths of the ocean and now empowered with multi-modal intelligence.
+This repository is **not**:
+- An application (see [Noesis Noema](https://github.com/raskolnikoff/NoesisNoema) for the client app)
+- A service implementation (see noema-agent for execution layer)
+- A product offering
+- A tutorial or how-to guide
 
-## Features
+**Purpose**: RAGfish serves as the system-design anchor for retrieval-augmented generation systems where humans remain accountable decision-makers and AI systems function as constrained execution tools.
 
-- 🛡️ Privacy-first, fully on-device RAG with extended support for visual data (images, diagrams, charts)
-- 💻 Runs natively on Apple Silicon (macOS/iOS, M1+) with full feature parity across platforms
-- 🐟 Pre-packaged with embedded models and sample "RAGfish DB" for instant exploration
-- 🗂️ Supports user-imported RAGpacks (chunked & embedded docs, ZIP format)
-- Multi-RAGpack support
-- Threaded Q&A history
-- Full Apple Silicon optimization
-- ⚡️ Fast local search, summary, and QA—no cloud, no tracking
-- 🖼️ Multi-modal capabilities: image recognition, diagram/chart interpretation, and visual search
-- 🚀 New model support: Jan-v1-4B/4V with GGUF model option for enhanced performance and flexibility
-- Future plans: web & cloudless multi-user collaboration
+---
 
-## Quick Start
+## Ecosystem Overview
 
-1. Download and launch [NoesisNoema app](https://github.com/raskolnikoff/NoesisNoema) for macOS/iOS
-2. (Optional) Preprocess your own docs and images using the [RAGpack Colab Preprocessor Notebook](https://github.com/raskolnikoff/noesisnoema-pipeline/blob/main/notebooks/chunk_embed_generator.ipynb) from the noesisnoema-pipeline project, download the RAGpack ZIP, and import it in-app
-3. Start asking multi-modal questions in natural language or with images. Enjoy!
+The Noesis Noema ecosystem consists of three architectural layers with explicit responsibility boundaries:
 
-*Note: Official release builds are coming soon. For now, use the main branch of NoesisNoema app. See [RAGfish](https://github.com/raskolnikoff/RAGfish) for specs and dev tools.*
+### Client Layer: Noesis Noema
+- **Repository**: [NoesisNoema](https://github.com/raskolnikoff/NoesisNoema)
+- **Role**: Decision and routing layer
+- **Responsibilities**:
+  - All routing decisions (local vs cloud execution)
+  - Policy enforcement (privacy, cost, latency)
+  - Context aggregation and knowledge selection
+  - User interaction and presentation
+- **Authority**: 100% decision authority
+- **Evolution**: Fast (feature-driven, user-facing)
 
-## Ecosystem & Related Projects
+### Execution Layer: noema-agent
+- **Role**: Constrained execution service
+- **Responsibilities**:
+  - Execute tasks under client-specified constraints
+  - Orchestrate computational resources
+  - Return results with complete metadata
+- **Authority**: 0% decision authority
+- **Constraints**: Stateless, replaceable, observable
+- **Evolution**: Slow (stability-driven, contract-preserving)
 
-RAGfish is the core RAGpack specification and toolkit.  
-It is designed to be used with the following companion projects:
+### Knowledge Layer: RAGpack
+- **Role**: Persistent knowledge assets
+- **Format**: ZIP-based, model-agnostic embeddings and chunks
+- **Characteristics**: Passive, portable, shareable
+- **Responsibilities**: None (knowledge does not execute)
+- **Evolution**: Independent (domain-driven)
 
-### NoesisNoema (macOS/iOS App)
+**Architectural Invariant**:
+> Routing decisions belong to the client, not the server.  
+> AI systems assist reasoning but never own intent, memory, or responsibility.
 
-- **Reference implementation:** A private RAG client for macOS and iOS that leverages RAGfish RAGpack format with full feature parity.
-- **Features:**  
-  - Full offline, on-device retrieval-augmented generation (RAG) with multi-modal query support (text + image)
-  - QA history & thread management (your questions are stored and retrievable)
-  - Multi-RAGpack support (import as many knowledge packs as you want)
-  - Modern two-pane UI (QA history/threads, detail view, future extensibility)
-  - Privacy-first, Apple Silicon optimized, now including visual data privacy
-- **Get started:**  
-  1. Download [NoesisNoema](https://github.com/raskolnikoff/NoesisNoema)
-  2. Import RAGpacks (sample or your own)
-  3. Ask questions, explore knowledge, upload images, and see instant answers with cited chunks and visual insights
+---
 
-### noesisnoema-pipeline (Colab/CLI Preprocessing Toolkit)
+## Core Principles
 
-- **Reference pipeline:** Create your own RAGpack (.zip) from PDF/text/images using Google Colab or CLI.
-- **Features:**  
-  - Chunking & embedding for any document (English or multilingual) and images (including diagrams and charts)
-  - Outputs compatible RAGpack (.zip) for direct import in RAGfish/NoesisNoema
-  - Supports export of both `.npy` and `.csv` for easy integration (see docs)
-  - Fast prototyping: no local environment required if using Colab
-- **Get started:**  
-  1. Go to [noesisnoema-pipeline](https://github.com/raskolnikoff/noesisnoema-pipeline)
-  2. Follow the notebook or CLI steps to generate your own multi-modal RAGpack from PDF, text, or images
-  3. Download and import the RAGpack (.zip) in NoesisNoema or RAGfish
+### 1. Human Accountability
+Humans are the only accountable actors in the system. All long-lived intent remains human-inspectable and human-controllable.
+
+### 2. AI as Tool, Not Subject
+AI systems (LLMs, embeddings, retrieval) are stateless probabilistic executors. They assist reasoning but do not make decisions, set goals, or own responsibility.
+
+### 3. Client-Side Routing
+All routing, policy, and execution placement decisions are made at the client layer. Execution layers are constrained executors with zero decision authority.
+
+### 4. Deterministic Responsibility Boundaries
+Each layer has explicit responsibilities and explicit non-responsibilities. Boundary violations are architectural failures.
+
+### 5. Validation Requires Human Judgment
+Automated tests are necessary but not sufficient. Semantic correctness, intent alignment, and value trade-offs require human validation.
+
+### 6. No Autonomous Behavior
+Execution layers do not retry, fallback, escalate, learn, or optimize autonomously. All such decisions are client-controlled.
+
+---
 
 ## Architecture Overview
 
-RAGfish consists of three main parts:
+The system is decomposed by **responsibility and rate of change**, not by technology.
 
-- The pipeline (for preprocessing and generating multi-modal RAGpacks)
-- The RAGfish core engine (which performs fast local retrieval and QA across text and visual data)
-- User-facing apps (NoesisNoema for macOS/iOS)
+### Three-Layer Architecture
 
-All knowledge flows through the RAGpack format for seamless integration and privacy. The architecture now embraces a multi-modal flow, combining text embeddings with visual embeddings extracted from images, diagrams, and charts. This enables rich, context-aware retrieval-augmented generation that understands and reasons over both textual and visual information—all fully on-device and privacy-preserving.
+```
+Client (Noesis Noema)
+    ↓ [Invocation Boundary]
+Execution (noema-agent)
+    ↓ [Retrieval]
+Knowledge (RAGpack)
+```
 
-See the detailed architecture documentation and diagrams:
+**Client Layer**:
+- Fast iteration
+- Human-adjacent
+- Policy-rich
+- Owns routing and context
 
-- [Architecture Doc](./docs/architect/ARCHITECTURE.md)
-- [Component Diagram](docs/assets/ComponentDiagram.png)
-- [Class Diagram](docs/assets/ClassDiagram.png)
+**Execution Layer**:
+- On-demand
+- Stateless
+- Bounded agentic reasoning under constraints
 
-## Business Workflow Transformation: As-Is vs. To-Be
+**Knowledge Layer**:
+- Model-agnostic
+- Structured for retrieval
+- Evolves independently
 
-See how RAGfish revolutionizes document Q&A and knowledge workflows compared to conventional approaches:
+- No embedded behavior
 
-![Business Workflow: As-Is vs. To-Be](docs/assets/noesisnoema.png)
+### Canonical Architecture Diagram
 
-**Key Benefits:**
+The following diagram is the **canonical visual representation** of the RAGfish / Noema architecture. It defines responsibility boundaries and authority distribution across all layers.
 
-- Unified, instant document and visual data Q&A (no more fragmented search)
-- On-device privacy—no cloud, no leaks, now including images and diagrams
-- Fully offline, always available
-- Easy to extend with your own knowledge packs (RAGpacks)
-- Built for business productivity and compliance
+![RAGfish / Noema Architecture](docs/assets/Architecture.png)
 
-## Project Philosophy
+This diagram establishes that **client-side routing is architectural** (ADR-0005). The Invocation Boundary is not merely an API—it is a responsibility border. The execution layer operates as a constrained executor with zero decision authority. All routing, policy, and knowledge selection decisions remain client-controlled.
 
-RAGfish is built on the principle that knowledge work should remain private, powerful, and beautiful—like the silent depths of the ocean. We believe LLM-powered RAG should require no server, no login, and no risk. Your documents, images, and brain—on your device.
+**Key Property**: Human intent flows top-down. Execution results flow bottom-up. No autonomous lateral or upward decision-making.
 
-## Diagrams
+---
 
-### Class Diagram
+## Operational Model
 
-![Class Diagram](docs/assets/ClassDiagram.png)
+### Client-Side Evolution
+- **Frequency**: Weekly to monthly
+- **Drivers**: User needs, feature development, policy changes
+- **Deployment**: User-controlled (app updates)
+- **Validation**: Human UAT required before release
 
-### Sequence Diagram
+### Execution-Side Evolution
+- **Frequency**: Monthly to quarterly
+- **Drivers**: Security patches, model backend upgrades, performance improvements
+- **Deployment**: Service-managed (rolling updates, canary)
+- **Validation**: Human UAT + constraint enforcement verification required
+- **Constraint**: API changes require 90-day deprecation notice
 
-![Sequence Diagram](docs/assets/SequenceDiagram.png)
+### Knowledge-Side Evolution
+- **Frequency**: Independent, on-demand per domain
+- **Drivers**: New knowledge domains, updated sources
+- **Deployment**: User-controlled (RAGpack import)
+- **Validation**: Human curator verifies semantic correctness
 
-### Component Diagram
+### Why This Separation Exists
+Components with different evolution speeds must not be tightly coupled. Client feature velocity should not force execution layer changes. Execution stability should not block client innovation. Knowledge updates should not require system-wide coordination.
 
-![Component Diagram](docs/assets/ComponentDiagram.png)
+---
 
-### Use Case Diagram
+## Documentation Index
 
-![Use Case Diagram](docs/assets/UseCaseDiagram.png)
+### Architecture & Design
+- [Architecture Constitution](docs/architect/ARCHITECTURE.md) — Foundational principles and layer definitions
+- [noema-agent v2 Definition](docs/architect/noema-agent-v2.md) — Execution service specification
+- [Architecture Diagram (PlantUML)](docs/diagrams/architecture.aws.puml) — Canonical system diagram
 
-## Documentation
+### Architectural Decision Records (ADRs)
+- [ADR-0001](docs/adr/adr-0001.md) — RAGpack ZIP format and tokenizer removal
+- [ADR-0004](docs/adr/adr-0004.md) — Architecture Constitution introduction
+- [ADR-0005](docs/adr/adr-0005.md) — Client-side routing as first-class principle
 
-- [Architecture](./docs/architect/ARCHITECTURE.md)
-- [Design Docs](./docs/designs/DesignDoc.md)
-- [ADRs](./docs/adr/)
+### Operations & Validation
+- [OPERATIONS.md](docs/OPERATIONS.md) — Operational governance and lifecycle management
+- [VALIDATION.md](docs/validation/VALIDATION.md) — Validation philosophy and human-in-the-loop requirements
+- [UAT.md](docs/uat/UAT.md) — User acceptance testing procedures and checklist
 
-## Roadmap / Future Plans
+### Legacy Documentation
+- [Design Document](docs/designs/DesignDoc.md) — Historical design notes
+- [BPMN Diagrams](docs/bpmn/) — Process flow diagrams
+- [UML Diagrams](docs/uml/) — Class, component, sequence, and use case diagrams
 
-- iOS universal app with full macOS/iOS feature parity
-- Advanced chunk highlighting, source trace, and cross-document QA
-- In-app RAGpack generation (pipeline-less)
-- UI/UX: Enhanced right-pane for document preview, chunk roots, annotation, and visual data display
-- Cloudless peer-to-peer knowledge sharing (private multi-device sync)
-- More LLM model support (future Apple ML, third-party LLMs)
-- API for plugin and automation extension
-- In-app image-to-text analysis, diagram reasoning, and chart Q&A for seamless multi-modal interaction
-- More: See [Issues](https://github.com/raskolnikoff/ragfish/issues)
+---
+
+## Non-Goals
+
+RAGfish explicitly does **not** aim to:
+
+- Provide a deployable application (use Noesis Noema client)
+- Offer a hosted service or SaaS platform
+- Maximize AI autonomy or agentic capabilities
+- Compete on model performance benchmarks
+- Support cloud-first or server-driven architectures
+- Enable autonomous task delegation or goal-setting by AI
+- Replace human judgment in validation or decision-making
+- Optimize for speed over human accountability
+- Abstract away responsibility boundaries
+
+**Principle**: If a design choice increases AI autonomy at the cost of human accountability, it violates project goals.
+
+---
+
+## Status
+
+**Active Development** — Design-first, implementation follows.
+
+This repository is under active architectural development. Specifications are stabilizing. Implementation repositories (Noesis Noema, noema-agent) track this architecture.
+
+**Current Focus**:
+- Finalizing Architecture Constitution (completed)
+- Defining noema-agent v2 API contract (in progress)
+- Establishing validation and UAT procedures (completed)
+- Refining RAGpack v2 specification (planned)
+
+**Stability**:
+- Core principles: Stable (non-negotiable)
+- Layer boundaries: Stable
+- API contracts: Stabilizing (breaking changes require ADR + 90-day notice)
+- Implementation details: Evolving
+
+---
+
+## Contributing
+
+Contributions that align with the Architecture Constitution and existing ADRs are welcome.
+
+Before contributing:
+1. Read [Architecture Constitution](docs/architect/ARCHITECTURE.md)
+2. Review relevant [ADRs](docs/adr/)
+3. Understand [validation requirements](docs/validation/VALIDATION.md)
+
+Contributions that violate core principles (e.g., introducing autonomous AI decision-making) will be rejected regardless of technical merit.
+
+---
 
 ## License
 
 [MIT](./LICENSE)
+
+---
+
+## Related Repositories
+
+- [Noesis Noema](https://github.com/raskolnikoff/NoesisNoema) — Client application (macOS/iOS)
+- [noesisnoema-pipeline](https://github.com/raskolnikoff/noesisnoema-pipeline) — RAGpack preprocessing toolkit
+
+---
+
+**RAGfish**: System architecture for human-accountable RAG systems.  
+**Last Updated**: 2026-02-05
