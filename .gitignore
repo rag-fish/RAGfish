@@ -475,3 +475,4 @@ fabric.properties
 ## Misc
 .DS_Store
 *.swp
+./artifacts/
