@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="jetbrains.bpmn.editor.config.BpmnProjectConfigState">
+    <option name="engine" value="CAMUNDA_8" />
+    <option name="schema" value="DEFAULT" />
+    <option name="scriptType" value="NONE" />
+    <option name="theme" value="SYSTEM" />
+  </component>
+</project>
