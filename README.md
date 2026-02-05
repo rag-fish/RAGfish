@@ -106,7 +106,6 @@ Knowledge (RAGpack)
 
 **Execution Layer**:
 - On-demand
-- Replaceable
 - Stateless
 - Bounded agentic reasoning under constraints
 
@@ -114,18 +113,19 @@ Knowledge (RAGpack)
 - Model-agnostic
 - Structured for retrieval
 - Evolves independently
+
 - No embedded behavior
 
 ### Canonical Architecture Diagram
-/^The following diagram is the/a
-/^![RAGfish / Noema Architecture]/a
-/^This diagram establishes that/a
-/^**Key Property**:/a
 
 The following diagram is the **canonical visual representation** of the RAGfish / Noema architecture. It defines responsibility boundaries and authority distribution across all layers.
+
 ![RAGfish / Noema Architecture](docs/assets/Architecture.png)
+
 This diagram establishes that **client-side routing is architectural** (ADR-0005). The Invocation Boundary is not merely an API—it is a responsibility border. The execution layer operates as a constrained executor with zero decision authority. All routing, policy, and knowledge selection decisions remain client-controlled.
+
 **Key Property**: Human intent flows top-down. Execution results flow bottom-up. No autonomous lateral or upward decision-making.
+
 ---
 
 ## Operational Model
