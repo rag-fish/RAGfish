@@ -81,3 +81,22 @@ fabric.properties
 .DS_Store
 *.swp
 artifacts/
+
+# Prevent accidental runtime additions
+node_modules/
+dist/
+build/
+coverage/
+
+# Prevent accidental JS/TS toolchain
+package.json
+package-lock.json
+tsconfig.json
+jest.config.js
+.eslintrc.js
+
+# Prevent accidental source files
+*.ts
+*.tsx
+*.jsx
+
