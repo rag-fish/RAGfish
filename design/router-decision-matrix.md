@@ -198,4 +198,158 @@ It must not:
 - Adapt
 - Self-modify
 
-All changes to routing behavior require explicit versioned modification.
+
+---
+
+# 8. Machine-Readable Decision Table (Deterministic Spec)
+
+This section formalizes the Router rules in a machine-readable format.
+This representation is normative for future CI validation.
+
+```yaml
+router_version: "1.0.0"
+
+defaults:
+  token_threshold: 4096
+  fallback_allowed: false
+
+rules:
+
+  - id: PRIVACY_LOCAL
+    condition:
+      privacy_level: "local"
+    action:
+      route: "local"
+      fallback_allowed: false
+
+  - id: PRIVACY_CLOUD
+    condition:
+      privacy_level: "cloud"
+    action:
+      route: "cloud"
+      fallback_allowed: false
+
+  - id: AUTO_LOCAL
+    condition:
+      privacy_level: "auto"
+      token_count_lte_threshold: true
+      local_model_available: true
+      intent_supported_by_local: true
+    action:
+      route: "local"
+      fallback_allowed: true
+
+  - id: AUTO_CLOUD
+    condition:
+      privacy_level: "auto"
+      otherwise: true
+    action:
+      route: "cloud"
+      fallback_allowed: false
+
+failure_rules:
+
+  - id: LOCAL_EXECUTION_FAILURE
+    condition:
+      route: "local"
+      execution_failed: true
+      fallback_allowed: true
+    action:
+      route: "cloud"
+      log_escalation: true
+
+  - id: CLOUD_EXECUTION_FAILURE
+    condition:
+      route: "cloud"
+      execution_failed: true
+    action:
+      return_error: true
+
+invariants:
+  - deterministic: true
+  - no_probabilistic_routing: true
+  - no_hidden_fallback: true
+  - no_recursive_routing: true
+```
+
+
+Notes:
+- This table must be treated as the authoritative decision contract.
+- Any change to this structure requires an ADR update.
+- CI may parse this YAML to verify routing determinism.
+
+---
+
+# 9. Router Contract Schema (Structural Validation Layer)
+
+This section defines a structural contract for validating the Machine-Readable Decision Table.
+This schema is intended for CI-level validation only.
+
+The Router specification MUST satisfy this structural schema.
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RouterDecisionMatrix",
+  "type": "object",
+  "required": ["router_version", "defaults", "rules", "invariants"],
+  "properties": {
+    "router_version": { "type": "string" },
+    "defaults": {
+      "type": "object",
+      "required": ["token_threshold", "fallback_allowed"],
+      "properties": {
+        "token_threshold": { "type": "integer", "minimum": 1 },
+        "fallback_allowed": { "type": "boolean" }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "condition", "action"],
+        "properties": {
+          "id": { "type": "string" },
+          "condition": { "type": "object" },
+          "action": { "type": "object" }
+        }
+      }
+    },
+    "failure_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "condition", "action"],
+        "properties": {
+          "id": { "type": "string" },
+          "condition": { "type": "object" },
+          "action": { "type": "object" }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    }
+  }
+}
+```
+
+## CI Enforcement Policy
+
+CI SHOULD:
+
+1. Extract the YAML block from Section 8.
+2. Convert YAML to JSON deterministically.
+3. Validate against this schema.
+4. Fail build if validation fails.
+
+The schema ensures:
+
+- No missing structural keys
+- No malformed rule definitions
+- No silent contract drift
+
+Any change to Section 8 MUST pass schema validation before merge.
