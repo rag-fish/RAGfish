@@ -116,7 +116,7 @@ Before any production release, a human validator must complete the following che
 
 #### 4.1.1 Routing Decisions
 
-- [ ] **I have manually tested routing decisions for at least 5 representative scenarios**
+- [ ] **I have manually tested deterministic routing decisions for at least 5 representative scenarios**
   - Scenarios must include: local-only, cloud-only, hybrid, privacy-sensitive, cost-sensitive
 
 - [ ] **I have verified that routing respects user privacy preferences**
@@ -201,8 +201,8 @@ Describe constraint scenarios tested and enforcement outcomes.
 - [ ] **I have verified that execution does not autonomously retry failed requests**
   - Test: Trigger execution failure, verify no automatic retry without client instruction
 
-- [ ] **I have verified that execution does not autonomously escalate or delegate tasks**
-  - Test: Submit complex task, verify no autonomous decomposition or sub-task creation
+- [ ] **I have verified that execution does not autonomously escalate, decompose, or rewrite tasks**
+  - Test: Submit complex task, verify no autonomous sub-task creation, prompt rewriting, or recursive invocation
 
 - [ ] **I have verified that execution does not autonomously relax constraints**
   - Test: Submit request near constraint boundary, verify no creative reinterpretation
@@ -378,6 +378,33 @@ Describe constitutional compliance verification.
 **ADRs Reviewed** (required):
 ```
 List ADR numbers and titles reviewed.
+```
+
+---
+
+### 4.6 Determinism & Observability Compliance
+
+- [ ] **I have verified that routing decisions are deterministic**
+  - Test: Repeat identical input under identical configuration, verify identical route
+
+- [ ] **I have verified that session timeout is enforced at exactly 45 minutes of inactivity**
+  - Test: Allow session to expire, verify session_id rejection and memory purge
+
+- [ ] **I have verified that no autonomous background execution occurs**
+  - Test: Observe system without user interaction, verify no hidden invocation
+
+- [ ] **I have verified that structured error schema is respected**
+  - Test: Trigger errors and confirm JSON structure matches error-handling.md contract
+
+- [ ] **I have verified that trace_id propagates end-to-end**
+  - Test: Confirm same trace_id appears in client logs, server logs, and error responses
+
+- [ ] **I have verified production log redaction policy**
+  - Test: Confirm raw prompt is not logged in production mode
+
+**Validator Notes** (required):
+```
+Describe determinism and observability validation performed.
 ```
 
 ---
