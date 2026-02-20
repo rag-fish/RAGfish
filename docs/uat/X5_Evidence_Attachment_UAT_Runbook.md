@@ -64,6 +64,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-001",
+    "request_id": "req-001",
     "task_type": "echo",
     "payload": {
       "text": "hello uat"
@@ -75,7 +76,7 @@ Verify:
 
 - HTTP 200
 - `request_id` present
-- `executed_at` present
+- `timestamp` present (server-generated execution timestamp)
 - `result` present
 
 ---
@@ -87,6 +88,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-002",
+    "request_id": "req-002",
     "task_type": "echo",
     "payload": {
       "text": "evidence test"
@@ -111,6 +113,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-003",
+    "request_id": "req-003",
     "task_type": "non_existing_task",
     "payload": {}
   }' | jq
@@ -132,6 +135,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-004",
+    "request_id": "req-004",
     "task_type": "echo"
   }' | jq
 ```
@@ -150,6 +154,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-005",
+    "request_id": "req-005",
     "task_type": "echo",
     "payload": {
       "text": "determinism"
@@ -162,6 +167,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "uat-006",
+    "request_id": "req-006",
     "task_type": "echo",
     "payload": {
       "text": "determinism"
@@ -172,8 +178,8 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
 Compare:
 
 ```bash
-jq 'del(.request_id, .executed_at)' r1.json > c1.json
-jq 'del(.request_id, .executed_at)' r2.json > c2.json
+jq 'del(.trace_id, .timestamp, .execution_time_ms)' r1.json > c1.json
+jq 'del(.trace_id, .timestamp, .execution_time_ms)' r2.json > c2.json
 diff c1.json c2.json
 ```
 
@@ -207,6 +213,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "session-A",
+    "request_id": "req-session-A",
     "task_type": "echo",
     "payload": {
       "text": "A"
@@ -219,6 +226,7 @@ curl -s -X POST http://127.0.0.1:8000/invoke \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "session-B",
+    "request_id": "req-session-B",
     "task_type": "echo",
     "payload": {
       "text": "B"
