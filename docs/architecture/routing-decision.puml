@@ -1,0 +1,40 @@
+@startuml
+skinparam defaultTextAlignment center
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F8F8F8
+skinparam ActivityBorderColor #4682B4
+skinparam ActivityDiamondBackgroundColor #FFE4B5
+skinparam ActivityDiamondBorderColor #FF8C00
+skinparam ActivityFontStyle bold
+skinparam ArrowColor #4682B4
+
+title RAGfish / Noema\nRouting Policy Decision
+
+start
+
+:User Query;
+
+:PolicyEngine;
+
+if (Tool or external execution required?) then (YES)
+    :route = remoteAgent;
+    stop
+else (NO)
+endif
+
+if (Privacy sensitive query?) then (YES)
+    :route = localLLM;
+    stop
+else (NO)
+endif
+
+if (Low latency preferred?) then (YES)
+    :route = localLLM;
+    stop
+else (NO)
+    :route = remoteAgent;
+    stop
+endif
+
+@enduml
+

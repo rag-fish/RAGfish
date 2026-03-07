@@ -1,0 +1,116 @@
+@startuml
+left to right direction
+skinparam defaultTextAlignment center
+skinparam rectangleBorderThickness 2
+skinparam rectangleFontStyle bold
+skinparam shadowing false
+
+skinparam rectangle {
+    BackgroundColor<<client>> #E6F3FF
+    BorderColor<<client>> #4682B4
+
+    BackgroundColor<<boundary>> #FFE4B5
+    BorderColor<<boundary>> #FF8C00
+    BorderThickness<<boundary>> 3
+
+    BackgroundColor<<execution>> #E6F3FF
+    BorderColor<<execution>> #4682B4
+
+    BackgroundColor<<knowledge>> #FFFAF0
+    BorderColor<<knowledge>> #CD853F
+}
+
+' ==========================
+' Client Layer (Swift Code)
+' repository: NoesisNoema
+' ==========================
+
+rectangle "==Client Layer (Swift Runtime)" as ClientLayer <<client>> {
+
+    component "**MinimalClientView**\nSwiftUI Interface" as view
+
+    component "**ExecutionCoordinator**\nOrchestrates request lifecycle" as coordinator
+
+    component "**Router**\nPolicy‑based routing" as router
+
+    component "**PolicyEngine**\nExecution decision rules" as policy
+
+    component "**LocalExecutor**\nllama.cpp bridge" as localexec
+
+    component "**AgentExecutor**\nRemote execution" as agentexec
+
+    component "**AgentClient**\nHTTP API client" as agentclient
+}
+
+view --> coordinator
+coordinator --> policy
+coordinator --> router
+router --> localexec
+router --> agentexec
+agentexec --> agentclient
+
+
+' ==========================
+' Invocation Boundary
+' ==========================
+
+rectangle "==Invocation Boundary" as BoundaryLayer <<boundary>> {
+
+    component "**noema-agent API**\nPOST /v1/query" as boundary
+
+}
+
+agentclient --> boundary
+
+
+' ==========================
+' Execution Layer
+' repository: noema-agent
+' ==========================
+
+rectangle "==Execution Layer" as ExecutionLayer <<execution>> {
+
+    component "**ConstraintEngine**\nValidates execution" as constraint
+
+    component "**TaskExecutor**\nStateless execution" as executor
+
+}
+
+boundary --> constraint
+constraint --> executor
+
+
+' ==========================
+' Knowledge Layer
+' repository: noesisnoema-pipeline
+' ==========================
+
+rectangle "==Knowledge Layer" as KnowledgeLayer <<knowledge>> {
+
+    storage "**RAGpack Store**\nChunked knowledge\nEmbeddings" as ragpack
+
+}
+
+executor --> ragpack : retrieve references
+
+
+' ==========================
+' Local Model Runtime
+' ==========================
+
+rectangle "==Local Runtime" {
+
+    component "**llama.cpp**\nLocal inference engine" as llama
+
+}
+
+localexec --> llama
+
+
+' ==========================
+' Title
+' ==========================
+
+title RAGfish / Noema Architecture (Code-Level)\nEPIC4 — Routing & Hybrid Execution
+
+@enduml
