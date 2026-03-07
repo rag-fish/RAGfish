@@ -1,0 +1,77 @@
+@startuml
+skinparam defaultTextAlignment center
+skinparam shadowing false
+skinparam sequenceArrowThickness 2
+skinparam sequenceParticipantBorderThickness 2
+skinparam sequenceGroupBorderThickness 2
+skinparam sequenceGroupBorderColor #FF8C00
+skinparam sequenceGroupBackgroundColor #FFF8EE
+skinparam sequenceGroupFontStyle bold
+skinparam ParticipantBackgroundColor #F8F8F8
+skinparam ParticipantBorderColor #4682B4
+skinparam ParticipantFontStyle bold
+skinparam ActorBackgroundColor #E6F3FF
+skinparam ActorBorderColor #4682B4
+skinparam ArrowColor #4682B4
+skinparam LifeLineBorderColor #4682B4
+
+title RAGfish / Noema\nExecution Runtime Sequence
+
+actor "User" as User
+participant "MinimalClientView" as View
+participant "ExecutionCoordinator" as Coordinator
+participant "PolicyEngine" as Policy
+participant "Router" as Router
+
+box "Local Execution" #EEF6FF
+    participant "LocalExecutor" as LocalExec
+    participant "llama.cpp" as Llama
+end box
+
+box "Remote Execution" #FFF8EE
+    participant "AgentExecutor" as AgentExec
+    participant "AgentClient" as AgentClient
+end box
+
+box "Invocation Boundary" #FFE4B5
+    participant "noema-agent API" as AgentAPI
+end box
+
+box "Execution Layer" #E6F3FF
+    participant "ConstraintEngine" as Constraint
+    participant "TaskExecutor" as TaskExec
+end box
+
+box "Knowledge Layer" #FFFAF0
+    participant "RAGpack Store" as RAGpack
+end box
+
+User -> View : submit query
+View -> Coordinator : execute(request)
+Coordinator -> Policy : evaluate(request)
+Coordinator -> Router : route(request)
+
+alt route = localLLM
+    Router -> LocalExec : execute(request)
+    LocalExec -> Llama : inference
+    Llama --> LocalExec : response
+    LocalExec --> Coordinator : response
+
+else route = remoteAgent
+    Router -> AgentExec : execute(request)
+    AgentExec -> AgentClient : send request
+    AgentClient -> AgentAPI : POST /v1/query
+    AgentAPI -> Constraint : validate
+    Constraint -> TaskExec : execute
+    TaskExec -> RAGpack : retrieve references
+    TaskExec --> AgentAPI : result
+    AgentAPI --> AgentClient : response
+    AgentClient --> AgentExec : response
+    AgentExec --> Coordinator : response
+end
+
+Coordinator -> View : response
+View -> User : render answer
+
+@enduml
+

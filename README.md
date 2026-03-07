@@ -1,246 +1,254 @@
 # RAGfish
 
-**System architecture and specifications for human-accountable RAG systems**
+**RAGfish** is the reference implementation of the **Noema Architecture** — an AI runtime design that strictly separates **decision**, **execution**, and **knowledge**.
+
+The project implements the architectural principle:
+
+> **AI is not the subject.**
+> AI is a tool executed under human‑controlled policy.
+
+This repository contains the architectural documentation and implementation artifacts for the Noema runtime model.
 
 ---
 
-## What This Repository Is
+# Architecture Overview
 
-RAGfish is an **architectural specification repository** for the Noesis Noema ecosystem.
+The system is divided into three core layers:
 
-This repository defines:
-- System architecture and component boundaries
-- Operational constraints and validation requirements
-- API contracts and responsibility models
-- Knowledge representation formats (RAGpack)
 
-This repository is **not**:
-- An application (see [Noesis Noema](https://github.com/raskolnikoff/NoesisNoema) for the client app)
-- A service implementation (see noema-agent for execution layer)
-- A product offering
-- A tutorial or how-to guide
+| Layer           | Responsibility                     |
+| --------------- | ---------------------------------- |
+| Client Layer    | Decision making and routing        |
+| Execution Layer | Constrained task execution         |
+| Knowledge Layer | Storage and retrieval of knowledge |
 
-**Purpose**: RAGfish serves as the system-design anchor for retrieval-augmented generation systems where humans remain accountable decision-makers and AI systems function as constrained execution tools.
+These layers are separated by explicit **boundaries** so that no single component can both decide and execute.
 
 ---
 
-## Ecosystem Overview
+# System Architecture
 
-The Noesis Noema ecosystem consists of three architectural layers with explicit responsibility boundaries:
+The following diagram describes the overall architecture.
 
-### Client Layer: Noesis Noema
-- **Repository**: [NoesisNoema](https://github.com/raskolnikoff/NoesisNoema)
-- **Role**: Decision and routing layer
-- **Responsibilities**:
-  - All routing decisions (local vs cloud execution)
-  - Policy enforcement (privacy, cost, latency)
-  - Context aggregation and knowledge selection
-  - User interaction and presentation
-- **Authority**: 100% decision authority
-- **Evolution**: Fast (feature-driven, user-facing)
+![Noema Architecture](docs/diagrams/architecture-standalone.png)
 
-### Execution Layer: noema-agent
-- **Role**: Constrained execution service
-- **Responsibilities**:
-  - Execute tasks under client-specified constraints
-  - Orchestrate computational resources
-  - Return results with complete metadata
-- **Authority**: 0% decision authority
-- **Constraints**: Stateless, replaceable, observable
-- **Evolution**: Slow (stability-driven, contract-preserving)
+Key principles:
 
-### Knowledge Layer: RAGpack
-- **Role**: Persistent knowledge assets
-- **Format**: ZIP-based, model-agnostic embeddings and chunks
-- **Characteristics**: Passive, portable, shareable
-- **Responsibilities**: None (knowledge does not execute)
-- **Evolution**: Independent (domain-driven)
-
-**Architectural Invariant**:
-> Routing decisions belong to the client, not the server.  
-> AI systems assist reasoning but never own intent, memory, or responsibility.
+- Decision authority exists only in the **client runtime**
+- Execution agents are **stateless and constrained**
+- Knowledge stores contain **no behavior**
+- Routing decisions are explicit and auditable
 
 ---
 
-## Core Principles
+# Routing Policy Decision
 
-### 1. Human Accountability
-Humans are the only accountable actors in the system. All long-lived intent remains human-inspectable and human-controllable.
+The **PolicyEngine** determines where a query should be executed.
 
-### 2. AI as Tool, Not Subject
-AI systems (LLMs, embeddings, retrieval) are stateless probabilistic executors. They assist reasoning but do not make decisions, set goals, or own responsibility.
+Routing decisions are based on runtime policy signals such as:
 
-### 3. Client-Side Routing
-All routing, policy, and execution placement decisions are made at the client layer. Execution layers are constrained executors with zero decision authority.
+- Tool or external execution requirements
+- Privacy sensitivity
+- Latency preferences
 
-### 4. Deterministic Responsibility Boundaries
-Each layer has explicit responsibilities and explicit non-responsibilities. Boundary violations are architectural failures.
+![Routing Policy Decision](docs/assets/routing-policy-decision.png)
 
-### 5. Validation Requires Human Judgment
-Automated tests are necessary but not sufficient. Semantic correctness, intent alignment, and value trade-offs require human validation.
-
-### 6. No Autonomous Behavior
-Execution layers do not retry, fallback, escalate, learn, or optimize autonomously. All such decisions are client-controlled.
-
----
-
-## Architecture Overview
-
-The system is decomposed by **responsibility and rate of change**, not by technology.
-
-### Three-Layer Architecture
+Example outcomes:
 
 ```
-Client (Noesis Noema)
-    ↓ [Invocation Boundary]
-Execution (noema-agent)
-    ↓ [Retrieval]
-Knowledge (RAGpack)
+localLLM      → execute locally using llama.cpp
+remoteAgent   → execute via noema-agent
 ```
 
-**Client Layer**:
-- Fast iteration
-- Human-adjacent
-- Policy-rich
-- Owns routing and context
-
-**Execution Layer**:
-- On-demand
-- Stateless
-- Bounded agentic reasoning under constraints
-
-**Knowledge Layer**:
-- Model-agnostic
-- Structured for retrieval
-- Evolves independently
-
-- No embedded behavior
-
-### Canonical Architecture Diagram
-
-The following diagram is the **canonical visual representation** of the RAGfish / Noema architecture. It defines responsibility boundaries and authority distribution across all layers.
-
-![RAGfish / Noema Architecture](docs/assets/Architecture.png)
-
-This diagram establishes that **client-side routing is architectural** (ADR-0005). The Invocation Boundary is not merely an API—it is a responsibility border. The execution layer operates as a constrained executor with zero decision authority. All routing, policy, and knowledge selection decisions remain client-controlled.
-
-**Key Property**: Human intent flows top-down. Execution results flow bottom-up. No autonomous lateral or upward decision-making.
+The router itself performs **no decision logic**. It only maps policy results to execution routes.
 
 ---
 
-## Operational Model
+# Execution Runtime Sequence
 
-### Client-Side Evolution
-- **Frequency**: Weekly to monthly
-- **Drivers**: User needs, feature development, policy changes
-- **Deployment**: User-controlled (app updates)
-- **Validation**: Human UAT required before release
+The following sequence diagram illustrates how a request moves through the system.
 
-### Execution-Side Evolution
-- **Frequency**: Monthly to quarterly
-- **Drivers**: Security patches, model backend upgrades, performance improvements
-- **Deployment**: Service-managed (rolling updates, canary)
-- **Validation**: Human UAT + constraint enforcement verification required
-- **Constraint**: API changes require 90-day deprecation notice
+![Execution Runtime Sequence](docs/assets/execution-runtime-sequence.png)
 
-### Knowledge-Side Evolution
-- **Frequency**: Independent, on-demand per domain
-- **Drivers**: New knowledge domains, updated sources
-- **Deployment**: User-controlled (RAGpack import)
-- **Validation**: Human curator verifies semantic correctness
+Execution flow:
 
-### Why This Separation Exists
-Components with different evolution speeds must not be tightly coupled. Client feature velocity should not force execution layer changes. Execution stability should not block client innovation. Knowledge updates should not require system-wide coordination.
+1. User submits query
+2. Client UI forwards request to ExecutionCoordinator
+3. PolicyEngine evaluates execution conditions
+4. Router selects execution route
+5. Request executes locally or via remote agent
+6. Execution layer retrieves references from RAGpack store
+7. Response is returned to the client
 
 ---
 
-## Documentation Index
+# Repository Structure
 
-### Architecture & Design
-- [Architecture Constitution](docs/architect/ARCHITECTURE.md) — Foundational principles and layer definitions
-- [noema-agent v2 Definition](docs/architect/noema-agent-v2.md) — Execution service specification
-- [Architecture Diagram (PlantUML)](docs/diagrams/architecture.aws.puml) — Canonical system diagram
-
-### Architectural Decision Records (ADRs)
-- [ADR-0001](docs/adr/adr-0001.md) — RAGpack ZIP format and tokenizer removal
-- [ADR-0004](docs/adr/adr-0004.md) — Architecture Constitution introduction
-- [ADR-0005](docs/adr/adr-0005.md) — Client-side routing as first-class principle
-
-### Operations & Validation
-- [OPERATIONS.md](docs/OPERATIONS.md) — Operational governance and lifecycle management
-- [VALIDATION.md](docs/validation/VALIDATION.md) — Validation philosophy and human-in-the-loop requirements
-- [UAT.md](docs/uat/UAT.md) — User acceptance testing procedures and checklist
-
-### Legacy Documentation
-- [Design Document](docs/designs/DesignDoc.md) — Historical design notes
-- [BPMN Diagrams](docs/bpmn/) — Process flow diagrams
-- [UML Diagrams](docs/uml/) — Class, component, sequence, and use case diagrams
-
----
-
-## Non-Goals
-
-RAGfish explicitly does **not** aim to:
-
-- Provide a deployable application (use Noesis Noema client)
-- Offer a hosted service or SaaS platform
-- Maximize AI autonomy or agentic capabilities
-- Compete on model performance benchmarks
-- Support cloud-first or server-driven architectures
-- Enable autonomous task delegation or goal-setting by AI
-- Replace human judgment in validation or decision-making
-- Optimize for speed over human accountability
-- Abstract away responsibility boundaries
-
-**Principle**: If a design choice increases AI autonomy at the cost of human accountability, it violates project goals.
+```
+RAGfish/
+ ├ docs/
+ │  ├ diagrams/
+ │  │   architecture-standalone.puml
+ │  │   architecture-standalone.png
+ │  │   routing-decision.puml
+ │  │   execution-sequence.puml
+ │  │
+ │  └ assets/
+ │      routing-policy-decision.png
+ │      execution-runtime-sequence.png
+ │
+ ├ NoesisNoema/
+ │    Swift client runtime
+ │
+ ├ noema-agent/
+ │    Constrained execution runtime
+ │
+ └ noesisnoema-pipeline/
+      RAGpack generation tools
+```
 
 ---
 
-## Status
+# Core Components
 
-**Active Development** — Design-first, implementation follows.
+## Client Layer (Decision Layer)
 
-This repository is under active architectural development. Specifications are stabilizing. Implementation repositories (Noesis Noema, noema-agent) track this architecture.
+```
+MinimalClientView
+ExecutionCoordinator
+PolicyEngine
+Router
+LocalExecutor
+AgentExecutor
+AgentClient
+```
 
-**Current Focus**:
-- Finalizing Architecture Constitution (completed)
-- Defining noema-agent v2 API contract (in progress)
-- Establishing validation and UAT procedures (completed)
-- Refining RAGpack v2 specification (planned)
+Responsibilities:
 
-**Stability**:
-- Core principles: Stable (non-negotiable)
-- Layer boundaries: Stable
-- API contracts: Stabilizing (breaking changes require ADR + 90-day notice)
-- Implementation details: Evolving
+- Evaluate policy
+- Route execution
+- Manage human interaction
 
----
-
-## Contributing
-
-Contributions that align with the Architecture Constitution and existing ADRs are welcome.
-
-Before contributing:
-1. Read [Architecture Constitution](docs/architect/ARCHITECTURE.md)
-2. Review relevant [ADRs](docs/adr/)
-3. Understand [validation requirements](docs/validation/VALIDATION.md)
-
-Contributions that violate core principles (e.g., introducing autonomous AI decision-making) will be rejected regardless of technical merit.
+The client runtime is the **only decision authority**.
 
 ---
 
-## License
+## Invocation Boundary
 
-[MIT](./LICENSE)
+The invocation boundary prevents execution layers from influencing decision logic.
+
+```
+AgentClient → noema-agent API
+```
+
+This boundary ensures that the execution environment cannot modify routing decisions.
 
 ---
 
-## Related Repositories
+## Execution Layer
 
-- [Noesis Noema](https://github.com/raskolnikoff/NoesisNoema) — Client application (macOS/iOS)
-- [noesisnoema-pipeline](https://github.com/raskolnikoff/noesisnoema-pipeline) — RAGpack preprocessing toolkit
+```
+ConstraintEngine
+TaskExecutor
+```
+
+Responsibilities:
+
+- Validate requests
+- Execute tasks
+- Remain stateless
+
+The execution layer has **no decision authority**.
 
 ---
 
-**RAGfish**: System architecture for human-accountable RAG systems.  
-**Last Updated**: 2026-02-05
+## Knowledge Layer
+
+```
+RAGpack Store
+```
+
+Responsibilities:
+
+- Store chunked knowledge
+- Provide retrieval references
+
+The knowledge layer has **no behavior**.
+
+---
+
+# Execution Routes
+
+Two execution paths currently exist:
+
+
+| Route       | Description                   |
+| ----------- | ----------------------------- |
+| localLLM    | Local inference via llama.cpp |
+| remoteAgent | Execution through noema-agent |
+
+Routing decisions are made by the PolicyEngine and mapped by the Router.
+
+---
+
+# Design Principles
+
+The Noema architecture follows several strict rules:
+
+1. **AI cannot decide.** Only policy code may decide.
+2. **Execution must be constrained.** Agents cannot autonomously act.
+3. **Knowledge must be passive.** Knowledge systems do not contain logic.
+4. **Routing must be explicit.** All execution paths are observable.
+
+These rules prevent uncontrolled agent behavior and keep the system deterministic.
+
+---
+
+# Development
+
+Typical development flow:
+
+```
+git checkout main
+
+git checkout -b feature/epicX
+
+# implement
+
+git commit
+
+git push
+
+# open PR
+```
+
+---
+
+# Current Architecture Phase
+
+The project is currently implementing:
+
+**EPIC4 — Routing & Hybrid Execution**
+
+This phase introduces:
+
+- Policy-based routing
+- Local vs remote execution
+- Hybrid runtime orchestration
+
+---
+
+# Future Work
+
+Planned improvements include:
+
+- Advanced routing policies
+- Cost-aware routing
+- Privacy-aware execution
+- Model selection policies
+
+---
+
+# License
+
+TBD
