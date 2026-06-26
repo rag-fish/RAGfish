@@ -253,6 +253,7 @@ These fields need manual confirmation before the CLI automation can be fully wir
 
 ## Related Docs
 
+- [ADR-0001 (Noema): Noema Architecture as Governed Multi-Model Cognition](adr/ADR-0001-noema-architecture.md)
 - [ADR-0000: Product Constitution](../adr/adr-0000-product-constitution.md)
 - [ADR-0011: Retrieval Quality Recovery](../adr/ADR-0011-update-retrieval-quality-and-context-budget.md)
 - [Architecture Overview](../architect/ARCHITECTURE.md)
