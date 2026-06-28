@@ -89,6 +89,7 @@ The following documents define the Noema Architecture and Project v2:
 | Document | Purpose |
 |----------|---------|
 | [Project Charter v2](docs/noema/project/PROJECT-CHARTER-v2.md) | Vision, mission, principles, and success criteria for Project v2 |
+| [Execution Roadmap v2](docs/noema/project/EXECUTION-ROADMAP-v2.md) | Capability themes, execution order, dependency matrix, and AI collaboration model |
 | [ADR-0001: Noema Architecture](docs/noema/adr/ADR-0001-noema-architecture.md) | Four-repo structure and responsibility boundaries |
 | [ADR-0002: Noema Governance Pipeline](docs/noema/adr/ADR-0002-noema-governance-pipeline.md) | How the system evaluates, routes, executes, and produces verifiable outcomes |
 | [Human-Governed Development Loop](docs/noema/human-governed-loop.md) | Task lifecycle, branch naming, issue and PR discipline |
