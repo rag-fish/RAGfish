@@ -93,6 +93,7 @@ The following documents define the Noema Architecture and Project v2:
 | [ADR-0001: Noema Architecture](docs/noema/adr/ADR-0001-noema-architecture.md) | Four-repo structure and responsibility boundaries |
 | [ADR-0002: Noema Governance Pipeline](docs/noema/adr/ADR-0002-noema-governance-pipeline.md) | How the system evaluates, routes, executes, and produces verifiable outcomes |
 | [Human-Governed Development Loop](docs/noema/human-governed-loop.md) | Task lifecycle, branch naming, issue and PR discipline |
+| [Concept Note 0001 — Dialogue Engineering](docs/noema/concepts/CONCEPT-0001-dialogue-engineering.md) | Engineering concept: optimising shared understanding across human-AI dialogue |
 
 ---
 
