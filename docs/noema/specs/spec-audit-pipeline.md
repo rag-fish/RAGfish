@@ -63,7 +63,7 @@ Privacy defaults:
 - Content-free: hashes and metadata only. `--include-queries` is an explicit opt-in and is itself recorded as a `policy.change`-class audit event.
 - Verification is fully offline: `noema-evidence verify <pkg> --pubkey <key>` checks signature + chain slice + manifest hashes.
 
-Crypto choices: Ed25519 (Python: `cryptography`; Swift v0.9: CryptoKit `Curve25519.Signing`). No platform attestation in v0.8 (see ADR-0012 trade-offs).
+Crypto choices: Ed25519 (Python: `cryptography`; Swift v0.9: CryptoKit `Curve25519.Signing`). No platform attestation in v0.8 (see ADR-0003 trade-offs).
 
 ## 4. Threat model (scope-honest)
 
