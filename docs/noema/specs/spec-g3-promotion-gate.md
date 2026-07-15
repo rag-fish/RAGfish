@@ -54,6 +54,19 @@ Recall@k = mean over queries of |retrieved_top_k ∩ relevant| / |relevant|. Def
 4. Policy file edited between `run` and `stamp` (policy_sha256 mismatch) → `stamp` refuses.
 5. Re-stamping an already-promoted pack → refuses without `--force`, which itself emits a distinct audit event.
 
+## Report preservation (amended 2026-07-14)
+
+`noema-gate run` writes its report to a standard tracked location by default:
+`reports/g3/<pack_id>/<UTC-timestamp>-report.json`. `--out` may override;
+existing files are never silently overwritten (refuse, no `--force` for `run`).
+
+`noema-gate stamp` refuses if the report file is not tracked by git in the
+repository containing it (dangling-evidence prevention). Escape hatch
+`--allow-untracked-report` exists but emits a distinct audit event recording
+the override.
+
+The `gate.run` audit event's `outputs.sha256_refs` MUST include the report hash.
+
 ## Non-goals (v0.8)
 
 - Precision / faithfulness / answer-quality metrics.
