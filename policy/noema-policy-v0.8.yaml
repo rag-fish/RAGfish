@@ -1,0 +1,35 @@
+# Noema policy manifest — human-owned, sha256-pinned by consumers.
+# Source of truth lives in rag-fish/RAGfish (direct commit allowed).
+# Pipeline and app pin a specific sha256; a pin change is a policy.change audit event.
+
+policy_version: "0.8.0"
+owner: "taka"
+effective_from: "2026-07-02"
+
+gates:
+  g1_provenance:            # enforced by runtime from v0.9
+    require_grounding: true
+    min_chunks_cited: 1
+    ungrounded_label: "model-only"   # answers without grounding MUST carry this label
+  g3_promotion:             # enforced by pipeline (noema-gate)
+    metric: "recall_at_k"
+    k: 5
+    threshold: "0.80"       # string on purpose: audit events forbid float drift
+    min_goldset_queries: 30
+    hard_floor_queries: 10  # below this, gate refuses to run
+  g5_budget:                # enforced by runtime from v0.9
+    n_ctx: 4096
+    trim_strategy: "oldest_first"
+
+audit:
+  required: true            # G6
+  local_only_default: true
+  export:
+    enabled: true
+    default_include_queries: false
+    signing: "ed25519"
+
+change_control:             # G4
+  architecture: "adr_required"
+  pipeline_main: "pr_required"
+  ragfish_main: "direct_commit_allowed"
