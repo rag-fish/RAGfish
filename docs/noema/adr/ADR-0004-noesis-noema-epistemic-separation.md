@@ -19,6 +19,8 @@ ADR-0000 (Product Constitution) fixed the foundational declaration:
 
 That declaration names two epistemic roles — **noesis** (the human-governed act of inquiry and judgment) and **Noema** (what emerges from it) — but the architecture has never formally defined them as layers with distinct responsibilities, trust boundaries, and capabilities.
 
+This ADR introduces a system layer it calls **NOESIS**. That reuse of the word is deliberate but carries a risk: ADR-0000 fixes **human noesis** as the *sovereign* act — "human noesis governs and AI accompanies." The NOESIS layer defined here is not that act. It is a system capability that *assists* human noesis. The two must be held apart with the same rigor this ADR applies to **Noema** vs. **`noema-agent`**, or the layer name could be read as relocating sovereign judgment into the system. The core rule is: **NOESIS assesses; human noesis governs.**
+
 The system is now moving toward work that involves **investigation**: decomposing a claim, synthesising evidence from multiple sources, holding competing hypotheses, assessing source dependency, and producing a calibrated judgment. Some of that work may, when a human explicitly approves it, involve acquiring *new external evidence* — crossing a trust boundary out of the local, user-owned corpus.
 
 Investigation output must eventually be turned into readable narrative for the user. Today there is no architectural rule that separates *the entity that investigates and judges* from *the entity that writes the narrative*. Without that separation, a single model context holds both the investigative capability (retrieval, evidence access, the ability to reach out for more) and the presentation task. In that arrangement, the only thing stopping the presentation step from quietly acquiring more evidence, inventing a supporting claim, or nudging confidence upward is the model choosing not to. That is governance by prompt obedience, and ADR-0003 already rejected that posture for grounding (G1) and for policy/pack changes (Human Decision Gate).
@@ -38,6 +40,8 @@ This ADR closes that gap at the conceptual level. It does not design schemas, pr
 4. **Terminology collision.** The epistemic concept **Noema** (presentation / narrative transformation layer) collides with the existing repository and service **`noema-agent`** (the constrained, stateless Execution Layer defined in `docs/architect/noema-agent-v2.md`). If these are conflated, `noema-agent` could be silently redefined as "the Noema presentation layer", which is wrong and would weaken both definitions.
 
 5. **No named handoff boundary.** There is no single, formal object that constitutes the Noesis → Noema handoff. Without one, the presentation layer's input surface is ambiguous, and "what Noema is allowed to see" cannot be enforced.
+
+6. **Terminology collision (second).** Naming a system layer **NOESIS** collides with **human noesis** as fixed by ADR-0000 — the sovereign act of inquiry, judgment, and decision ownership. If these are conflated, the system layer could be read as owning sovereign judgment or governance authority, which would invert ADR-0000. The architecture needs an explicit distinction between *the human act* and *the assisting system capability*, and an invariant that keeps epistemic assessment separate from governance decision authority.
 
 ---
 
@@ -97,6 +101,17 @@ The Noesis → Noema handoff is a single, named object: `investigation_result`. 
 
 `noema-agent` is **not** automatically redefined as the Noema presentation layer. It remains the Execution Layer. A future implementation *may* choose to run Noema-layer narrative transformation as one constrained task inside `noema-agent`, but that is an implementation decision for a later ADR and is out of scope here. Until such a decision is recorded, "Noema" in architecture text means the epistemic layer, and "`noema-agent`" means the execution service.
 
+### 5. **Human noesis** is distinct from the **NOESIS** layer
+
+| Term | Meaning |
+|---|---|
+| **Human noesis** | The sovereign human act of inquiry, judgment, and decision ownership, as fixed by ADR-0000 ("human noesis governs and AI accompanies"). It is not a system component. It governs. |
+| **NOESIS** (system layer) | The system capability defined in this ADR that *assists* human noesis: claim decomposition, evidence synthesis, competing hypotheses, source-dependency analysis, uncertainty representation, calibrated epistemic assessment, and recommendations. It assesses; it does not govern. |
+
+The NOESIS layer **MUST NOT** be described as owning sovereign judgment, governance authority, routing authority, or human-approval ownership. Where a sentence would otherwise read "NOESIS owns judgment", the architecture uses "**NOESIS performs calibrated epistemic assessment**" instead. The outputs of the NOESIS layer — assessments, confidence estimates, hypotheses, recommendations — are **advisory artifacts** consumed by human noesis and by the Human Gate. They inform a governance decision; they are not one.
+
+Core rule: **NOESIS assesses. Human noesis governs.**
+
 ---
 
 ## Architectural Invariants
@@ -113,6 +128,8 @@ The Noesis → Noema handoff is a single, named object: `investigation_result`. 
 | **I8** | AI identity cannot own a Human Gate approval. Approval ownership is a human-only field. The system does not infer approval from inaction and does not extend a prior approval to a new acquisition. |
 | **I9** | The epistemic **Noema** layer and the **`noema-agent`** service are distinct. Neither definition is silently substituted for the other. |
 | **I10** | This lifecycle maps onto the existing four planes (ADR-0003) and nine-stage pipeline (ADR-0002). It adds an epistemic dimension; it does not replace Decision / Execution / Knowledge / Audit. |
+| **I11** | Noesis may produce epistemic assessments, confidence estimates, hypotheses, and recommendations. These outputs are advisory artifacts. They do not constitute governance decisions, routing authority, approval, or human judgment ownership. |
+| **I12** | **Human noesis** (the sovereign act, ADR-0000) and the **NOESIS** system layer are distinct. The NOESIS layer assists human noesis; it is never described as owning sovereign judgment or governance authority. Neither is silently substituted for the other. |
 
 `*` = may iterate zero or more times under repeated human authorization.
 
@@ -124,9 +141,9 @@ The Noesis → Noema handoff is a single, named object: `investigation_result`. 
 
 Raw material for investigation: retrieved chunks from the user-owned corpus (with provenance, per RAGpack v1.3 and G2), and — only after Human Gate approval — externally acquired sources. Evidence carries provenance and trust metadata computed at ingestion time (ADR-0002 Trust Evaluation; ADR-0003 Knowledge plane). Evidence is consumed by Noesis and by no other layer.
 
-### NOESIS — investigation and calibrated judgment
+### NOESIS — investigation and calibrated epistemic assessment
 
-Noesis is the investigative and epistemic-assessment layer. Its responsibilities:
+Noesis is the investigative and epistemic-assessment layer. It *assists* human noesis; it does not exercise it. It performs calibrated epistemic assessment — it does not own judgment. Its responsibilities:
 
 - **Investigation** — pursuing the question the human posed; organising the inquiry.
 - **Claim decomposition** — breaking a compound question or assertion into individually assessable claims.
@@ -138,6 +155,8 @@ Noesis is the investigative and epistemic-assessment layer. Its responsibilities
 - **Proposal for additional evidence acquisition** — when the current evidence is insufficient, Noesis may produce a *proposal* to acquire specific additional external evidence. The proposal is an output to the Human Gate; it is not an acquisition and does not authorize one.
 
 Noesis capabilities: reads raw evidence; invokes retrieval over the user-owned corpus; performs assessment; produces `investigation_result`. Noesis does **not** unilaterally cross external trust boundaries and does **not** own human approval.
+
+Everything Noesis produces — assessment states, confidence, hypotheses, recommendations, acquisition proposals — is an **advisory artifact** (I11). It is input to human noesis and to the Human Gate. It is not a governance decision, not routing authority, not an approval, and not a substitute for the human's judgment. The decision to act on a Noesis assessment, to authorize acquisition, or to accept a recommendation belongs to human noesis.
 
 ### HUMAN GATE — external trust-boundary authorization
 
@@ -218,6 +237,7 @@ Capability posture by layer. "No" means the capability is architecturally absent
 | Introduce new factual claims | Yes (from evidence) | No | No | **No** |
 | Set / raise confidence | Yes (calibrated) | No | No | **No** (carries through only) |
 | Own a human approval | **No** | Human only | No | **No** |
+| Own a governance decision / routing authority / sovereign judgment | **No** (advisory only, I11) | Human only | No | **No** |
 | Produce `investigation_result` | Yes (sole producer) | No | No | **No** (consumer only) |
 | Produce user-facing narrative | No | No | No | Yes (sole producer) |
 
@@ -247,7 +267,7 @@ This ADR adds an **epistemic dimension**. It does not replace the Decision / Exe
 - **Policy Evaluation** — gates whether investigation and acquisition proposals are permitted in this context.
 - **Trust Evaluation** — feeds Noesis; trust stays separate from the confidence Noesis calibrates.
 - **Route Contract** — declares whether a request is an investigation, and whether external acquisition is in scope pending the Human Gate.
-- **Execution** — Noesis assessment and Noema narrative are execution work under the contract. Neither owns routing authority.
+- **Execution** — Noesis assessment and Noema narrative are execution work under the contract. Neither owns routing authority; Noesis assessment is advisory to human noesis and the Human Gate (I11).
 - **Verification** — checks that `investigation_result` invariants hold and that the narrative did not add claims or raise confidence (regression cases: Issue #35).
 - **Evidence** — `investigation_result`, the Human Gate record, and the audit chain are evidence artifacts.
 - **Human Approval** — the Human Gate is the investigation-time instance of this stage; it does not add approval to ordinary grounded queries.
@@ -266,8 +286,9 @@ This ADR adds an **epistemic dimension**. It does not replace the Decision / Exe
 
 ### Consistency with ADR-0000 (Human Sovereignty)
 
+- Human Sovereignty ("human noesis governs and AI accompanies") → the **NOESIS** system layer accompanies; it does not govern. It performs calibrated epistemic assessment and produces advisory artifacts (I11). Inquiry ownership, judgment, and the decision to act stay with **human noesis** (I12). The layer name does not relocate sovereign judgment into the system.
 - Explicit Invocation Only → investigation starts from a human question; acquisition starts from a human approval.
-- Routing Authority → Noesis proposes acquisition; the human authorizes it.
+- Routing Authority → Noesis may *propose* acquisition and *recommend*; it never finalizes routing or authorizes acquisition. The human authorizes it.
 - Execution Transparency → every step is audited (G6).
 - Human Override Authority → declining at the Human Gate is always available.
 - State Mutation Consent → only Noesis mutates investigation state, within one invocation; Noema mutates nothing.
@@ -289,7 +310,7 @@ No repository boundary from ADR-0001 changes. This ADR assigns the epistemic lay
 | `investigation_result` contract + JSON Schema (Issue #34) | `rag-fish/RAGfish` | `docs/noema/schemas/` (or agreed path) |
 | Governance regression case specification (Issue #35) | `rag-fish/RAGfish` | `docs/noema/tests/` (or agreed path) |
 | Evidence provenance / trust metadata | `rag-fish/noesisnoema-pipeline` | Knowledge plane; RAGpack v1.3; unchanged |
-| Noesis runtime (retrieval, assessment) | `rag-fish/NoesisNoema` | Runtime plane; pure Swift; capability context that *has* retrieval + evidence access |
+| Noesis runtime (retrieval, assessment) | `rag-fish/NoesisNoema` | Runtime plane; pure Swift; capability context that *has* retrieval + evidence access. Assistive capability only — produces advisory artifacts (I11); governance decisions and inquiry ownership remain with human noesis (I12). |
 | Noema runtime (narrative transformation) | `rag-fish/NoesisNoema` | Runtime plane; pure Swift; **separate** capability context with no retrieval, no evidence store, no outbound API |
 | Human Gate (approval capture + record) | `rag-fish/NoesisNoema` (surface) + `rag-fish/RAGfish` (schema of the record) | Human-only approval field |
 | External evidence acquisition (execution) | `rag-fish/noema-agent` (candidate) | Constrained execution service; acquisition would be an explicit, approved, scoped task. **Design deferred** — not decided by this ADR. |
@@ -306,7 +327,8 @@ No repository boundary from ADR-0001 changes. This ADR assigns the epistemic lay
 - **The narrative layer cannot leak or fabricate.** Noema physically has no evidence store, no retrieval, and no outbound API, so a compromised or misaligned narrative step cannot exfiltrate evidence or reach outside the corpus.
 - **Confidence integrity.** A single calibrated confidence, set once by Noesis over all evidence, flows to the user unmodified.
 - **Human authority at the exact boundary that matters.** The Human Gate sits precisely where trust changes — leaving the user-owned corpus — and nowhere that would add friction to ordinary grounded queries.
-- **Terminology is unambiguous.** "Noema" (epistemic layer) and "`noema-agent`" (execution service) are formally separated; neither can be silently substituted for the other.
+- **Terminology is unambiguous.** "Noema" (epistemic layer) and "`noema-agent`" (execution service) are formally separated; and "human noesis" (the sovereign act, ADR-0000) and the "NOESIS" system layer are formally separated (I12). Neither pair can be silently substituted.
+- **Sovereignty is explicit at the layer boundary.** The NOESIS layer's outputs are advisory artifacts (I11); epistemic assessment is held separate from governance decision authority, which remains with human noesis. The layer name cannot be read as relocating judgment into the system.
 - **Clean handoff for downstream work.** `investigation_result` gives #33, #34, #35 a single, named object to constrain and test.
 - **Consistent with the existing architecture.** The four planes, nine stages, G1–G6, and ADR-0000 all still hold; this is an added dimension, not a rewrite.
 
@@ -402,7 +424,7 @@ Consistent with Issue #32:
 - ADR-0001 (four repos) — no repo boundary changed; epistemic layers mapped onto existing repos (§ Repository Responsibility Mapping). Local-only default path preserved; no new server dependency introduced (external acquisition is human-gated and optional).
 - ADR-0002 (nine-stage pipeline) — epistemic lifecycle mapped onto all nine stages (§ Relationship to Existing Architecture). Trust-vs-confidence separation preserved. Human Approval stage not added to routine inference. Route Contract still declared before execution.
 - ADR-0003 (four planes, G1–G6, zero runtime human gates for ordinary queries) — lifecycle mapped onto all four planes and all six rules. The Human Gate is scoped to the external trust boundary only, consistent with ADR-0003's "ordinary queries pass zero human gates". "Can't rather than won't" is consistent with ADR-0003's "governance by capability, not supervision".
-- ADR-0000 (Human Sovereignty) — checked against all five system constraints (§ Consistency with ADR-0000).
+- ADR-0000 (Human Sovereignty) — checked against the Foundational Declaration and the five system constraints this ADR engages (§ Consistency with ADR-0000). The **NOESIS** system layer accompanies and assesses; **human noesis** governs (I11, I12). No sentence in this ADR describes the NOESIS layer as owning sovereign judgment, governance authority, routing authority, or approval.
 
 **Check that no statement accidentally gives Noema evidence-acquisition capability:**
 
@@ -412,14 +434,18 @@ Consistent with Issue #32:
 
 - `noema-agent` is described only as the constrained, stateless Execution Layer ("exists to execute, not to decide"). Invariant I9 and Rejected Alternative D keep the epistemic "Noema" and the service "`noema-agent`" distinct. `noema-agent` is named as a *candidate* executor for approved external acquisition with design explicitly deferred to a future ADR — no capability or authority is added to it here.
 
+**Check that the NOESIS layer is never described as owning sovereign judgment or governance authority:**
+
+- Reviewed every mention of "NOESIS" / "Noesis" in this ADR. The § Context terminology note, Problem item 6, Decision § 5, invariants I11 and I12, the § NOESIS Layer Responsibilities note, the § Capability Restrictions row "Own a governance decision / routing authority / sovereign judgment" (Noesis = **No**), and § Consistency with ADR-0000 all state the layer *assists* and *assesses*, producing advisory artifacts. No sentence grants the NOESIS layer governance decision authority, routing finalization, approval ownership, or sovereign judgment. "NOESIS performs calibrated epistemic assessment" is used in place of "NOESIS owns judgment".
+
 **Terminology grep (per Issue #32 validation):**
 
 ```sh
-grep -n "Noesis\|Noema\|investigation_result\|can't\|cannot" \
+grep -n "Noesis\|Noema\|investigation_result\|can't\|cannot\|human noesis\|advisory" \
   docs/noema/adr/ADR-0004-noesis-noema-epistemic-separation.md
 ```
 
-Expected: matches present for all five terms, including the "can't rather than won't" principle statement and the enumerated `cannot` capability restrictions on Noema.
+Expected: matches present for all terms, including the "can't rather than won't" principle statement, the enumerated `cannot` capability restrictions on Noema, the "human noesis" vs "NOESIS layer" distinction, and the "advisory artifacts" characterisation of Noesis output (I11).
 
 ---
 
