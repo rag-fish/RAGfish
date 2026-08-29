@@ -64,7 +64,7 @@ control.
 | `SCH` | schema constraint — a field is absent, or its type forbids the value |
 | `TYP` | type-system / language-level constraint |
 | `VAL` | deterministic output validator rejects the violating output |
-| `POL` | policy manifest (`noema-policy.yaml`) declares the boundary |
+| `POL` | policy manifest / policy configuration declares the boundary |
 | `AUD` | append-only hash-chained audit (ADR-0003 G6); a missing/altered event invalidates the run |
 | `HUM` | human-only field / human identity required; an AI actor identity is rejected |
 | `DID` | defense-in-depth prompt instruction — **never a sole control** |
@@ -88,14 +88,14 @@ Evidence access · Mutation rights · External-API rights · Human-approval requ
 | Purpose | The **sovereign** act of inquiry, judgment, and decision ownership (`I12`; ADR-0000). Originates the question; governs the lifecycle; owns every governance decision and every Human Gate approval. |
 | Inputs | The user's question and intent; Noesis advisory artifacts; audit records; the Noema narrative. |
 | Outputs | Governance decisions; Human Gate approvals / declines; acceptance or rejection of Noesis recommendations; routing authorization; the decision to run, halt, redirect, or override. |
-| Allowed | Everything the architecture reserves to a human: authorize/decline acquisition; approve governance decisions; finalize routing; halt or override any execution (ADR-0000 §4); assert own claims and judgments. |
+| Allowed | Everything the architecture reserves to a human: authorize/decline acquisition; approve governance decisions; finalize routing; halt or override any execution (ADR-0000 §4); assert own claims and judgments, including recorded disagreement with a Noesis assessment. |
 | Forbidden / CANNOT | Nothing is forbidden to the human by this contract. |
 | Decision authority | **Total and sovereign.** No AI layer's output substitutes for it (`I11`, `I12`). |
 | Trust-boundary access | Authorizes B1 crossings. Owns the human side of B3. |
 | Credential access | The operator manages credentials **out of band**; they are never handed to a credential-absent AI layer. |
 | Retrieval access | May search their own corpus through the application surface. |
 | Evidence access | Full — it is the human's own corpus. Sees evidence-chain *summaries* in the advisory artifacts. |
-| Mutation rights | Governs whether an investigation runs, re-runs, or stops. Does **not** hand-edit investigation state (that is Noesis-owned; the human governs it, Noesis performs it). |
+| Mutation rights | Governs whether an investigation runs, re-runs, or stops. Does **not** hand-edit investigation state, nor the Noesis-calibrated confidence or assessment states (Noesis-owned; the human governs the investigation, Noesis performs it). A human may **disagree** with a Noesis assessment and record that disagreement as an independent human judgment — this is not a mutation of the assessment artifact. |
 | External-API rights | Out-of-band credential owner; authorizes acquisition. |
 | Human-approval requirements | N/A — the human is the approver. |
 
@@ -113,7 +113,7 @@ Evidence access · Mutation rights · External-API rights · Human-approval requ
 | Credential access | Evidence store **YES**; external-API **NO** (`CRED`). |
 | Retrieval access | **YES** over the user-owned corpus only (`I2`). |
 | Evidence access | **Full** for user-owned-corpus evidence and for evidence returned by an *approved* acquisition. The only layer that reads raw evidence (`I2`). |
-| Mutation rights | **Sole owner** of investigation state. On re-analysis it **recomputes** over the enlarged evidence set — never patches, appends, or overrides downstream (`I4`, `INV-7`). |
+| Mutation rights | **Sole owner and sole setter** of investigation state, including the calibrated confidence and assessment states. On re-analysis it **recomputes** over the enlarged evidence set — never patches, appends, or overrides downstream (`I4`, `INV-7`). No other actor — the human included — edits the calibrated assessment artifact; a human's disagreement is recorded as independent human judgment, separate from the artifact. |
 | External-API rights | **NONE.** Emits an acquisition *proposal* only. |
 | Human-approval requirements | Must obtain a recorded Human Gate approval before externally-acquired evidence enters the investigation (`I3`). A decline is valid — Noesis then produces `investigation_result` on existing evidence with the uncertainty stated. |
 
@@ -186,7 +186,7 @@ Evidence access · Mutation rights · External-API rights · Human-approval requ
 
 | Field | Statement |
 |---|---|
-| Purpose | Holds Evidence — user-owned-corpus chunks with provenance + trust metadata (RAGpack v1.3 / ADR-0003 Knowledge plane); and, after Human Gate approval, externally acquired sources with comparable provenance. |
+| Purpose | Holds Evidence — user-owned-corpus chunks with provenance + trust metadata (the corpus-pack format; ADR-0003 Knowledge plane); and, after Human Gate approval, externally acquired sources with comparable provenance. |
 | Read access | **NOESIS only** (`I2`). |
 | Write access | The corpus-production pipeline (ingestion) and the External Acquisition layer (approved acquisitions), within their boundaries. |
 | NOEMA access | **NONE** — no credential, no binding, not in NOEMA's input surface (`CRED`, `BIND`, `SCH`). This is B4. |
@@ -217,7 +217,7 @@ design.
 | Requirement | Rationale | Mechanism #34 must use |
 |---|---|---|
 | No raw evidence objects — evidence-chain **summary** only (incl. independent-source-chain counts) | B4; `I6` | `SCH` — no raw-evidence field; raw content unrepresentable |
-| Calibrated findings — bounded assessment states + calibrated confidence + explicit uncertainty | `I11`; `INV-10` | `SCH` — bounded enum (no `verified: boolean`); confidence and uncertainty are distinct fields |
+| Calibrated findings — bounded assessment states + calibrated confidence + explicit uncertainty | `I11`; `INV-10`; ADR-0004 | `SCH` — bounded assessment-state set, not a binary truth flag; confidence and uncertainty are distinct fields |
 | Uncertainty preserved | ADR-0004 §"Uncertainty" | `SCH` — uncertainty is a required, non-nullable field |
 | Confidence cannot be increased by Noema — the received value is a ceiling | `(c)` | `VAL` — a downstream validator rejects Noema output whose confidence exceeds the `investigation_result` value; owner [H3-OUTPUT-VALIDATION-SPEC #51](https://github.com/rag-fish/RAGfish/issues/51) → [H3-IMPL-OUTPUT-VALIDATOR NN#134](https://github.com/rag-fish/NoesisNoema/issues/134) |
 | Traceable claim identifiers — every claim carries a stable ID minted by Noesis | `(b)` — lets the validator detect a Noema-introduced claim | `SCH` + `VAL` — a claim ID not present in the handoff is rejected |
@@ -299,6 +299,7 @@ No contradiction with ADR-0000 → ADR-0004.
 5. **`noema-agent` not silently redefined** (§4.6, §10): epistemic NOEMA ≠ `noema-agent` (`I9`, `INV-5`); the acquisition-executor question is ADR-0005's, the hosting question ADR-0006's.
 6. **Every MUST NOT / CANNOT** has a §3 mechanism or an explicit `N/I` with owner.
 7. **Matrix ↔ contract consistency**: the matrix ([CAPABILITY-MATRIX.md](CAPABILITY-MATRIX.md) §5) is a strict superset of ADR-0004 §"Capability Restrictions" (18×6 vs 12×4) with every shared cell identical.
+8. **NOESIS is the sole owner and sole setter of the calibrated assessment state** (§4.2; matrix rows 3, 12). No other actor — the human included — edits it. A human may **disagree** with a Noesis assessment and record that disagreement as an independent human judgment (§4.1; matrix `[n11]`, `[n16]`); this is not a mutation of `investigation_result` and does not weaken any enforcement mechanism.
 
 ---
 
