@@ -3,7 +3,7 @@
 **Status:** Superseded for future execution planning by [EXECUTION-ROADMAP-v3](EXECUTION-ROADMAP-v3.md) (2026-08-29), following the acceptance of ADR-0004. Retained unchanged as historical evidence of the original Hermes plan.  
 **Date:** 2026-06-28  
 **Scope:** All four Noema repos  
-**Governance owner:** Taka  
+**Governance owner:** Human governance owner  
 **Bridges:** [Project Charter v2](PROJECT-CHARTER-v2.md) → implementation Issues
 
 > **Note (2026-08-29):** ADR-0004 (Noesis / Noema Epistemic Separation) is now the architectural baseline. The linear Phase A–F sequence below has been rebaselined into the epistemic Phase 0–8 model in [EXECUTION-ROADMAP-v3](EXECUTION-ROADMAP-v3.md). This document is not deleted — it remains the record of the pre-ADR-0004 plan. See ROADMAP-v3 § 3 for the KEEP / MOVE / REPLACE / RETIRE classification of every asset in this document.
@@ -294,7 +294,7 @@ Claude is the primary author of architectural artifacts: ADRs, contract document
 
 ### Codex CLI — Implementation, Tests, Validation, Refactoring
 
-Codex is the primary implementor of code-level changes: feature implementation, test coverage, data format implementation, and targeted refactors. Codex works from specifications produced by Claude and confirmed by Taka.
+Codex is the primary implementor of code-level changes: feature implementation, test coverage, data format implementation, and targeted refactors. Codex works from specifications produced by Claude and confirmed by the human governance owner.
 
 | Task class | Examples |
 |------------|---------|
@@ -303,9 +303,9 @@ Codex is the primary implementor of code-level changes: feature implementation, 
 | Validation | Latency benchmarks, corpus quality validation |
 | Refactoring | Targeted refactors within a single repo boundary |
 
-### Human (Taka) — Governance, Review, Merge, Prioritisation
+### Human (human governance owner) — Governance, Review, Merge, Prioritisation
 
-Taka is the governance owner. All merges require Taka's review. Architecture decisions are not authoritative until Taka has accepted them. Prioritisation of planned issues is Taka's decision.
+The human governance owner is the governance owner. All merges require the human governance owner's review. Architecture decisions are not authoritative until the human governance owner has accepted them. Prioritisation of planned issues is the human governance owner's decision.
 
 | Task class | Examples |
 |------------|---------|
@@ -336,10 +336,10 @@ Implementation (Claude: docs/specs; Codex: code/tests)
 Pull Request opened (linked to Issue, validation performed)
         │
         ▼
-Human Review (Taka reviews; feedback incorporated)
+Human Review (the human governance owner reviews; feedback incorporated)
         │
         ▼
-Merge to main (Taka merges; squash strategy)
+Merge to main (the human governance owner merges; squash strategy)
         │
         ▼
 Evidence recorded (ADR, contract, or implementation now in main)

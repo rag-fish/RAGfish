@@ -212,7 +212,7 @@ package "Decision Evidence" {
   [ADRs Confirmed in Production] as ACP
 }
 
-[Human / Taka] as HT
+[Human governance owner] as HT
 
 RD --> CN : distillation
 PE --> CN : distillation
@@ -227,7 +227,7 @@ CO --> GI : executable intent
 ADR --> GI : executable intent
 
 GI --> PR : implementation
-PR --> MP : merge (Taka)
+PR --> MP : merge (human governance owner)
 PR --> VC : validation
 MP --> ACP : production evidence
 
@@ -247,39 +247,39 @@ HT --> ACP : governance gate
 @startuml
 title Human-Governed Dialogue Engineering Loop
 
-actor "Human / Taka" as Taka
-participant "Max / ChatGPT" as Max
+actor "Human governance owner" as HGO
+participant "Architecture reviewer" as AR
 participant "Claude CLI" as Claude
 participant "Codex CLI" as Codex
 participant "GitHub Project" as GHP
 participant "Repository" as Repo
 
-Taka -> Max : architectural question or problem
-Max -> Taka : candidate concept, constraint, or design
-Taka -> Claude : audit concept against existing ADRs
-Claude -> Taka : validation result and open questions
+HGO -> AR : architectural question or problem
+AR -> HGO : candidate concept, constraint, or design
+HGO -> Claude : audit concept against existing ADRs
+Claude -> HGO : validation result and open questions
 
-Taka -> Max : refine concept based on audit
-Max -> Taka : distilled concept ready for record
+HGO -> AR : refine concept based on audit
+AR -> HGO : distilled concept ready for record
 
-Taka -> Repo : commit Concept Note
-Taka -> GHP : create GitHub Issue with DoD
+HGO -> Repo : commit Concept Note
+HGO -> GHP : create GitHub Issue with DoD
 
 GHP -> Codex : issue assigned (ready state)
 Codex -> Repo : branch created, implementation begins
 Codex -> Repo : commits on branch
 
 Codex -> GHP : PR opened
-GHP -> Taka : PR awaiting review
+GHP -> HGO : PR awaiting review
 
-Taka -> Repo : review diff
-Taka -> Repo : approve and merge PR
+HGO -> Repo : review diff
+HGO -> Repo : approve and merge PR
 
 Repo -> GHP : issue closed, status → merged
-Repo -> Max : evidence available for next dialogue
+Repo -> AR : evidence available for next dialogue
 Repo -> Claude : evidence available for next audit
 
-Max -> Taka : next architectural question (loop continues)
+AR -> HGO : next architectural question (loop continues)
 
 @enduml
 ```

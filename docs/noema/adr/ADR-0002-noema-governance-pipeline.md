@@ -3,7 +3,7 @@
 **Status:** Proposed  
 **Date:** 2026-06-27  
 **Revised:** 2026-06-27  
-**Deciders:** Taka (governance owner), Max / ChatGPT (architect)  
+**Deciders:** Human governance owner, Architecture reviewer  
 **Scope:** All four Noema repos
 
 ---
@@ -263,13 +263,13 @@ Approval contexts:
 
 | Context | Form of Approval |
 |---------|-----------------|
-| Development work | Taka reviews and merges the PR |
+| Development work | the human governance owner reviews and merges the PR |
 | Architecture decisions | ADR accepted by governance owner |
 | Corpus updates | RAGpack version approved before deployment |
 | High-stakes execution routing | Route Contract declares approval required; approval is recorded before execution proceeds |
 | Routine inference | No blocking approval required; governance is maintained through policy and trust evaluation |
 
-**Governance owner:** Taka, across all four repos. The human-governed loop encodes this responsibility in every task lifecycle.
+**Governance owner:** Human governance owner, across all four repos. The human-governed loop encodes this responsibility in every task lifecycle.
 
 ---
 
@@ -374,7 +374,7 @@ Each pipeline stage has a primary home in the four-repo architecture defined by 
 | Execution (remote/tool) | `noema-agent` | Server-side model execution; tool orchestration |
 | Verification | `noema-agent` | Technical and semantic verification of execution results |
 | Evidence | Distributed | Issues/PRs in all repos; ADRs and decision logs in `RAGfish` |
-| Human Approval | All repos | Taka reviews and merges; governance owner approves architecture |
+| Human Approval | All repos | the human governance owner reviews and merges; the human governance owner approves architecture |
 | Decision Log | `RAGfish` | ADRs, contracts, architecture narrative |
 
 ---

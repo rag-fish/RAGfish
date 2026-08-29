@@ -1,12 +1,12 @@
 # Project Hermes: Execution Roadmap v3 — Epistemic-Governance Rebaseline
 
-**Status:** Active (planning baseline; revision 2 addresses architecture-review findings 1–5; awaiting re-review by Max / ChatGPT and governance acceptance by Taka)
+**Status:** Active (planning baseline; revision 2 addresses architecture-review findings 1–5; awaiting architecture re-review and governance acceptance)
 **Date:** 2026-08-29
 **Scope:** All four Noema repos
-**Governance owner:** Taka
+**Governance owner:** Human governance owner
 **Owner agent (this document):** Claude Code CLI
-**Architecture Review:** Max / ChatGPT
-**Final Review / Merge Owner:** Taka
+**Architecture Review:** Architecture reviewer
+**Final Review / Merge Owner:** Human governance owner
 **Supersedes for future execution planning:** [EXECUTION-ROADMAP-v2](EXECUTION-ROADMAP-v2.md) — v2 is retained unchanged as historical evidence.
 **Architectural baseline:** [ADR-0004: Noesis / Noema Epistemic Separation](../adr/ADR-0004-noesis-noema-epistemic-separation.md) (merged to `main` via PR #36, incl. amendment `23b5736` — invariants I11/I12).
 
@@ -62,7 +62,7 @@ this roadmap is subordinate to them. Tasks reference these in their **Governed B
 | INV-8 | **Contracts before implementation; architecture before credentials/endpoints; capability restrictions before agent prompting; governance-boundary tests before production integration.** | ADR-0000, ADR-0002, ADR-0003, Charter v2 |
 | INV-9 | **Local-first is the default, non-degraded path.** Remote and external acquisition are opt-in and never a silent fallback. Zero runtime human gates for ordinary grounded queries. | ADR-0001, ADR-0003 |
 | INV-10 | **Trust ≠ confidence.** Knowledge trust (evaluated ex-ante) and model/assessment confidence (calibrated by Noesis) are independent and neither substitutes for the other. | ADR-0002, ADR-0003 |
-| INV-11 | **1 task = 1 Issue = 1 branch = 1 PR; Taka reviews and merges; every decision is recorded as an ADR/contract/evidence artifact.** | Human-Governed Loop, ADR-0001 |
+| INV-11 | **1 task = 1 Issue = 1 branch = 1 PR; the human governance owner reviews and merges; every decision is recorded as an ADR/contract/evidence artifact.** | Human-Governed Loop, ADR-0001 |
 
 ---
 
@@ -115,7 +115,7 @@ Legend: **KEEP** = still valid, no material conceptual change · **MOVE** = stil
 |---|---|---|---|
 | Six capability themes (Governance, Trust, Evidence, Performance, Observability, Multi-model Orchestration) | **KEEP** | ADR-0004 adds an epistemic dimension; it removes no theme. | Retained as cross-cutting capability lenses, mapped onto Phases 5–7. |
 | Repository participation model (which repo does what) | **KEEP** | ADR-0004 § "Repository Responsibility Mapping" is consistent with ADR-0001; no repo boundary changes. | Unchanged. |
-| AI collaboration model (Claude / Codex / Taka / Max) | **KEEP** | Same actors, same division of labour. | Unchanged; see §7. |
+| AI collaboration model (Claude / Codex / human governance owner / architecture reviewer) | **KEEP** | Same actors, same division of labour. | Unchanged; see §7. |
 | Development lifecycle (Issue → Branch → PR → Review → Merge → Evidence) | **KEEP** | Human-Governed Loop invariant (INV-11). | Unchanged. |
 | "Future Expansion → Athena" (extend, don't replace) | **KEEP** | ADR-0004 is that principle applied — Hermes extended, not replaced. | Unchanged. |
 | Cross-repo rule: `RAGfish` produces the contract/schema first, merged to `main`, before any repo implements | **KEEP** | Reinforced by INV-8. | Governs every phase. |
@@ -181,7 +181,7 @@ crosses a repo boundary or a governance boundary).
 | **5** | Trust / Evidence / Audit Integration | 5 specs + provenance/dependency impl, lifecycle audit-emission impl, trust-context impl, audit-chain verification, trust-context unit tests | all Phase 5 specs merged; impl merged; H5 tests green |
 | **6** | Observability / Performance | 5 specs + trace-emission impl, caching/async impl, benchmarks, trace-completeness tests | all Phase 6 specs merged; impl merged; H6 tests green |
 | **7** | Multi-model Orchestration | 5 specs/ADRs + Route Contract impl, routing-change impl, model-selection impl, no-gate-bypass integration tests, Route Contract unit tests | all Phase 7 specs + ADR-0007/0008 merged; impl merged; H7 tests green |
-| **8** | Final UAT / Release | integration UAT plan, 3 integration gates (governance regression, capability boundary, cross-repo UAT run), Taka Final UAT, release tags, release notes, rag.fish update, publication | Taka Final UAT sign-off; then release; then publication |
+| **8** | Final UAT / Release | integration UAT plan, 3 integration gates (governance regression, capability boundary, cross-repo UAT run), Human governance owner Final UAT, release tags, release notes, rag.fish update, publication | Human governance owner Final UAT sign-off; then release; then publication |
 
 **Scope note (revision 2):** This roadmap now **schedules** the implementation and
 automated-validation tasks in the runtime repositories so Project #16 carries the complete
@@ -207,16 +207,16 @@ Every task carries these 13 fields. The first 12 are the Human-Governed-Loop tas
 | Target Repository | Exactly one of the four repos, or `Conditional — resolved by <ADR>` (§9.4). |
 | Scope · Out of Scope | Bullet phrases. |
 | Branch Name | `<type>/<short-name>`, lowercase-hyphen, 2–5 words, no issue numbers. `docs/` for spec/ADR/audit, `feature/` for implementation & schema, `test/` for tests. |
-| **Owner Agent** | **Exactly one** of: `Claude CLI`, `Codex CLI`, `Taka`. Never a pair, never an arrow. |
+| **Owner Agent** | **Exactly one** of: `Claude CLI`, `Codex CLI`, `the human governance owner`. Never a pair, never an arrow. |
 | Definition of Done | Checkable exit criteria. |
 | Validation | Shell command(s) or a named manual check. |
 | **Dependencies** | Only executable/planning artifacts: a GitHub issue (`#NN`), a task ID (`H2-…`), or a merged ADR/contract (`ADR-0004`). **Never** an invariant. |
 | **Governed By** | The ADR clauses / `INV-n` the task must not violate. Advisory constraint, not a scheduling edge. |
-| Review / Merge Rule | Always: `Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash`. Extra hold conditions noted where they apply. |
+| Review / Merge Rule | Always: `Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash`. Extra hold conditions noted where they apply. |
 
-Owner-vs-reviewer: **Max / ChatGPT is a reviewer, not an execution owner.** Every ADR is
-authored by Claude CLI and carries `Architecture Review — Max / ChatGPT`. Human-intrinsic
-tasks (Final UAT, release tagging, external posting) are owned by **Taka**.
+Owner-vs-reviewer: **The architecture reviewer is a reviewer, not an execution owner.** Every ADR is
+authored by Claude CLI and carries `Architecture Review — architecture reviewer`. Human-intrinsic
+tasks (Final UAT, release tagging, external posting) are owned by the **human governance owner**.
 
 ### 5.1 Master task table
 
@@ -294,11 +294,11 @@ Type: `spec` (doc/contract) · `adr` · `schema` · `impl` · `test` · `human`.
 | H8-GOV-REGRESSION-GATE | Governance regression suite execution gate | 8 | test | RAGfish | Codex CLI | #35, *(all Phase 2–7 `impl` + `test` tasks)*, H8-INTEGRATION-UAT-PLAN | Planned |
 | H8-CAPABILITY-BOUNDARY-GATE | Capability-boundary test gate | 8 | test | RAGfish | Codex CLI | #35, H3-TEST-CAPABILITY-ISOLATION, H4-TEST-FAILCLOSED-INTEGRATION, *(all Phase 2–7 `impl`)*, H8-INTEGRATION-UAT-PLAN | Planned |
 | H8-INTEGRATION-UAT-RUN | Execute the cross-repository integration UAT | 8 | test | RAGfish (coordination) | Codex CLI | *(all Phase 2–7 `impl` + `test` tasks)*, H8-INTEGRATION-UAT-PLAN | Planned |
-| H8-FINAL-UAT | Final human UAT | 8 | human | all repos | Taka | H8-GOV-REGRESSION-GATE, H8-CAPABILITY-BOUNDARY-GATE, H8-INTEGRATION-UAT-RUN | Planned |
-| H8-RELEASE-TAGS | Release tags across repos | 8 | human | all repos | Taka | H8-FINAL-UAT | Planned |
+| H8-FINAL-UAT | Final human UAT | 8 | human | all repos | Human governance owner | H8-GOV-REGRESSION-GATE, H8-CAPABILITY-BOUNDARY-GATE, H8-INTEGRATION-UAT-RUN | Planned |
+| H8-RELEASE-TAGS | Release tags across repos | 8 | human | all repos | Human governance owner | H8-FINAL-UAT | Planned |
 | H8-RELEASE-NOTES | Release notes | 8 | spec | RAGfish | Claude CLI | H8-RELEASE-TAGS | Planned |
 | H8-RAGFISH-UPDATE | rag.fish website update | 8 | spec | RAGfish | Claude CLI | H8-RELEASE-NOTES | Planned |
-| H8-PUBLICATION | X / LinkedIn / Facebook publication | 8 | human | external | Taka | H8-RAGFISH-UPDATE, H8-RELEASE-TAGS | Planned |
+| H8-PUBLICATION | X / LinkedIn / Facebook publication | 8 | human | external | Human governance owner | H8-RAGFISH-UPDATE, H8-RELEASE-TAGS | Planned |
 
 **Count: 75 tasks** — Phase 0: 4 · Phase 1: 5 · Phase 2: 10 · Phase 3: 8 · Phase 4: 10 ·
 Phase 5: 10 · Phase 6: 9 · Phase 7: 10 · Phase 8: 9.
@@ -324,7 +324,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `rg -n "Noesis|Noema|Human Gate|evidence|external|capability|approval" docs/noema/governance`; manual cross-check vs ADR-0004 + Human-Governed Loop; confirm no control is prompt-only.
 - **Dependencies:** #32
 - **Governed By:** ADR-0004 §2, I6, I7, I8; INV-2, INV-4, INV-6
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash.
 
 #### #34 — Feature: `investigation_result` contract v0.1
 - **Description:** The machine-readable Noesis → Noema handoff — calibrated findings + approved recommendations, no raw evidence, no acquisition capability.
@@ -338,7 +338,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `python -m json.tool docs/noema/schemas/investigation-result.schema.json >/dev/null`; validate payloads; manual check vs ADR-0004 + #33.
 - **Dependencies:** #32, #33
 - **Governed By:** ADR-0004 I3, I5, I6; INV-3, INV-4
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash · do not merge if the Noema-facing schema exposes raw evidence or permits unbounded claim creation.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash · do not merge if the Noema-facing schema exposes raw evidence or permits unbounded claim creation.
 
 #### #35 — Test: Noesis/Noema governance regression cases
 - **Description:** Adversarial / regression cases proving the boundary fails closed.
@@ -352,7 +352,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `rg -n "new claim|confidence|external|approved_by|independent|cannot|reject" docs/noema/tests`; manual invariant→case traceability.
 - **Dependencies:** #32, #33, #34
 - **Governed By:** ADR-0004 I4, I6, I7, I8; INV-2, INV-4, INV-6, INV-7
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash · do not merge unless every critical invariant has a negative-path test.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash · do not merge unless every critical invariant has a negative-path test.
 
 ### 5.3 Phase 1 — Evidence & Acquisition Contracts
 
@@ -368,7 +368,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `rg -n "provenance|trust|origin|Noesis|evidence" docs/noema` ; manual cross-check vs RAGpack v1.3 + ADR-0002 §3.
 - **Dependencies:** #33
 - **Governed By:** ADR-0004 §"Evidence"; INV-4, INV-10
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash.
 
 #### H1-SOURCE-DEP-MODEL
 - **Description:** Formalize "how many *independent* source chains support a claim" (many reports, one origin = one chain).
@@ -382,7 +382,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** manual review vs ADR-0004 §"Source dependency analysis" and #35's source-dependency case.
 - **Dependencies:** #33, #34
 - **Governed By:** ADR-0004 §"Source dependency analysis"; INV-10
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash.
 
 #### H1-HUMANGATE-RECORD
 - **Description:** The recorded, scoped, human-only authorization object for crossing an external trust boundary.
@@ -396,7 +396,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `python -m json.tool docs/noema/schemas/human-gate-approval.schema.json >/dev/null`; payload tests; cross-check #33 human-only fields.
 - **Dependencies:** #33, #34
 - **Governed By:** ADR-0004 I8, B3; INV-6
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash · do not merge if `approved_by` can be non-human.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash · do not merge if `approved_by` can be non-human.
 
 #### H1-ACQUISITION-CONTRACT
 - **Description:** The request Noesis *proposes* and the result an approved acquisition returns — provider-agnostic, provenance-carrying.
@@ -410,7 +410,7 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Validation:** `python -m json.tool` on both schemas; payload tests; cross-check ADR-0004 §"External Evidence Acquisition".
 - **Dependencies:** #33, #34, H1-EVIDENCE-CONTRACT
 - **Governed By:** ADR-0004 I3, I4; INV-6, INV-7
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka · squash.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner · squash.
 
 #### H1-ADR-ACQ-LOCUS — ADR-0005 (Noema): external-acquisition execution locus
 - **Description:** Decide **where** approved external acquisition executes. ADR-0004 names `noema-agent` only as a candidate and defers this.
@@ -421,16 +421,16 @@ Merged via PR #36 incl. amendment `23b5736` (I11 advisory-artifacts, I12 human-n
 - **Branch Name:** `docs/adr-0005-acquisition-execution-locus`
 - **Owner Agent:** Claude CLI
 - **Definition of Done:** ADR-0005 merged with a clear decision; if `noema-agent` is chosen its "exists to execute, not to decide" definition is preserved (INV-5); follow-up issues identified; §9.4 of this roadmap updated by the ADR's merge.
-- **Validation:** manual review vs ADR-0004 I5/I9 + ADR-0001 repo boundaries; Max sign-off recorded.
+- **Validation:** manual review vs ADR-0004 I5/I9 + ADR-0001 repo boundaries; architecture-reviewer sign-off recorded.
 - **Dependencies:** H1-HUMANGATE-RECORD, H1-ACQUISITION-CONTRACT
 - **Governed By:** ADR-0004 I5, I9; INV-2, INV-5, INV-6
-- **Review / Merge Rule:** Architecture Review — Max / ChatGPT · Final Review / Merge Owner — Taka (accepts the ADR) · squash.
+- **Review / Merge Rule:** Architecture Review — architecture reviewer · Final Review / Merge Owner — human governance owner (accepts the ADR) · squash.
 
 ### 5.4 Phase 2 — NOESIS Runtime
 
 Preserve throughout: **NOESIS assesses; human noesis governs.** Outputs are advisory (I11).
 
-**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope highlights | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
@@ -440,7 +440,7 @@ Preserve throughout: **NOESIS assesses; human noesis governs.** Outputs are advi
 | H2-SOURCEDEP-EVAL | Turn H1-SOURCE-DEP-MODEL into an evaluation procedure Noesis follows to count independent chains. | procedure; inputs from Evidence provenance; output into `investigation_result`; edge cases. | implementation. | `docs/source-dependency-evaluation` | doc; deterministic procedure; maps to #35 source-dependency case. | run the procedure by hand vs #35 fixture. | H1-SOURCE-DEP-MODEL, H2-NOESIS-CONTRACT | ADR-0004 §"Source dependency analysis" |
 | H2-REANALYSIS-SEMANTICS | Newly acquired evidence causes a **recompute** over the enlarged set — not patch/append/override (INV-7); how iteration terminates. | recompute definition; supersede-not-edit rule; iteration/termination; audit events per re-analysis. | implementation; caching (Phase 6). | `docs/noesis-reanalysis-semantics` | doc; "single coherent judgment over all evidence" guarantee; audit-event list for Phase 5. | manual vs ADR-0004 I4 + §"NOESIS Re-analysis". | H2-ASSESSMENT-MODEL, H2-HYPOTHESES, H2-SOURCEDEP-EVAL, H1-ACQUISITION-CONTRACT | ADR-0004 I4; INV-7 |
 
-**Implementation & tests** (Owner: Codex CLI · Target: `rag-fish/NoesisNoema`, strict pure-Swift · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Target: `rag-fish/NoesisNoema`, strict pure-Swift · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
@@ -454,16 +454,16 @@ Preserve throughout: **NOESIS assesses; human noesis governs.** Outputs are advi
 
 Governance enforced **architecturally, not by prompting** (INV-2).
 
-**Specs / ADR** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs / ADR** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
 | H3-NOEMA-ISOLATION | Specify Noema as a separate capability context invoked with `investigation_result` **only** — no evidence-store credentials, no retrieval bindings, no outbound provider-API capability. | invocation contract; input surface = `investigation_result`; enumerated absent capabilities; enforcement mechanism per capability. | narrative prompt; process implementation; hosting decision. | `docs/noema-invocation-isolation` | spec; every INV-4 capability shown absent with a named mechanism (not "prompt"); cites #33 + #34. | cross-check #33, ADR-0004 §"Trust Boundaries" + §"Capability Restrictions". | #33, #34 | ADR-0004 I6, B2, B4; INV-3, INV-4 |
 | H3-NARRATIVE-CONTRACT | Define exactly what Noema may do — reorder/summarise/explain/format; carry through assessment states, confidence, uncertainty, hypotheses, limitations exactly as received. | permitted transformations; "state the limitation, do not acquire the fact" rule; no new claims; no confidence change. | prompt; UI rendering. | `docs/noema-narrative-contract` | contract doc; permitted/forbidden lists; consistent with H3-OUTPUT-VALIDATION-SPEC. | manual vs ADR-0004 §"NOEMA". | #34, H3-NOEMA-ISOLATION | ADR-0004 §"NOEMA"; INV-4 |
 | H3-OUTPUT-VALIDATION-SPEC | A checkable spec that Noema output introduced no new factual claim and did not raise confidence above the `investigation_result`. | validation rules; claim-set comparison; confidence-ceiling check; failure codes. | the validator implementation (H3-IMPL-OUTPUT-VALIDATOR); UI. | `docs/noema-output-validation-spec` | spec + example pass/fail fixtures; maps to #35 new-claim + confidence-escalation cases. | `rg -n "claim|confidence|reject|fail" docs/noema`; fixture review. | #34, #35, H3-NOEMA-ISOLATION | ADR-0004 I6; INV-4 |
-| H3-ADR-NOEMA-HOSTING — ADR-0006 (Noema) | Decide whether Noema-layer work runs as a constrained task inside `noema-agent` or as its own context — without weakening INV-5. | options; decision + rationale; how INV-4 stays "can't" under the chosen hosting; explicit epistemic-Noema ≠ `noema-agent` statement. | implementation. | `docs/adr-0006-noema-hosting` | ADR-0006 merged; INV-5 preserved; capability-isolation mechanism named. | Max sign-off; cross-check ADR-0004 I9 + Rejected Alternative D. | H3-NOEMA-ISOLATION, ADR-0004 | ADR-0004 I5, I9; INV-5 |
+| H3-ADR-NOEMA-HOSTING — ADR-0006 (Noema) | Decide whether Noema-layer work runs as a constrained task inside `noema-agent` or as its own context — without weakening INV-5. | options; decision + rationale; how INV-4 stays "can't" under the chosen hosting; explicit epistemic-Noema ≠ `noema-agent` statement. | implementation. | `docs/adr-0006-noema-hosting` | ADR-0006 merged; INV-5 preserved; capability-isolation mechanism named. | architecture-reviewer sign-off; cross-check ADR-0004 I9 + Rejected Alternative D. | H3-NOEMA-ISOLATION, ADR-0004 | ADR-0004 I5, I9; INV-5 |
 
-**Implementation & tests** (Owner: Codex CLI · Target: `rag-fish/NoesisNoema` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Target: `rag-fish/NoesisNoema` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
@@ -476,17 +476,17 @@ Governance enforced **architecturally, not by prompting** (INV-2).
 
 No automatic external acquisition. No provider credentials created in this roadmap.
 
-**Specs / designs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs / designs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
 | H4-SEALED-GATEWAY | Design the single choke point every external acquisition must pass, sealed so it cannot run without a valid Human Gate approval record. | gateway responsibilities; approval-record precondition; provenance capture on return; audit events; fail-closed behaviour. | endpoints, credentials, provider SDKs, code. | `docs/sealed-acquisition-gateway` | design doc; "no approval record ⇒ no acquisition" as a structural property; audit-event list. | manual vs ADR-0004 §"Human Gate" + INV-2/INV-6. | H1-HUMANGATE-RECORD, H1-ACQUISITION-CONTRACT, H1-ADR-ACQ-LOCUS | ADR-0004 I3, B1; INV-2, INV-6 |
-| H4-APPROVAL-ENFORCEMENT | Specify the mechanisms (schema validation, type constraints, absent credentials, separate context) that make bypassing the Human Gate impossible. | enforcement mechanism per bypass vector; mapping to #33 controls; prompt layer noted as non-sole. | implementation. | `docs/human-approval-enforcement` | doc; every known bypass vector has a non-prompt mechanism; maps to #35 "external acquisition without approval". | manual vs INV-2; Max sign-off. | H1-HUMANGATE-RECORD, H4-SEALED-GATEWAY | ADR-0004 I7, I8; INV-2, INV-6 |
+| H4-APPROVAL-ENFORCEMENT | Specify the mechanisms (schema validation, type constraints, absent credentials, separate context) that make bypassing the Human Gate impossible. | enforcement mechanism per bypass vector; mapping to #33 controls; prompt layer noted as non-sole. | implementation. | `docs/human-approval-enforcement` | doc; every known bypass vector has a non-prompt mechanism; maps to #35 "external acquisition without approval". | manual vs INV-2; architecture-reviewer sign-off. | H1-HUMANGATE-RECORD, H4-SEALED-GATEWAY | ADR-0004 I7, I8; INV-2, INV-6 |
 | H4-EXECUTOR-SELECTION | Apply ADR-0005 to specify which component executes an approved acquisition and its capability posture. | executor responsibilities; scoped to the approved acquisition only; no standing capability. | credentials; provider choice; implementation. | `docs/acquisition-executor-selection` | doc consistent with ADR-0005; scope-limited executor. | cross-check ADR-0005. | H1-ADR-ACQ-LOCUS, H4-SEALED-GATEWAY | ADR-0004 I5, I9; INV-5 |
 | H4-PROVIDER-TEMPLATE | A template for adding a provider later (required provenance/trust/scoping obligations) — no actual provider. | required provider-supplied fields; provenance/trust obligations; scoping; "not yet integrated" status list. | any named provider integration; API keys; endpoints. | `docs/provider-integration-template` | template doc; states no provider is integrated and each integration needs its own issue + review. | manual vs ADR-0004 Out-of-Scope list. | H4-SEALED-GATEWAY, H4-EXECUTOR-SELECTION | ADR-0004 §"External Evidence Acquisition"; INV-6 |
 | H4-ACQ-RETURN-TRIGGER | Specify how an acquisition result returns into Noesis and triggers a recompute (INV-7), not an append. | return path; re-analysis trigger; audit events; iteration bounds. | implementation. | `docs/acquisition-return-reanalysis` | contract doc; consistent with H2-REANALYSIS-SEMANTICS. | manual vs ADR-0004 I4. | H4-SEALED-GATEWAY, H2-REANALYSIS-SEMANTICS | ADR-0004 I4; INV-7 |
 
-**Implementation & tests** (Owner: Codex CLI · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Target repo | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|---|
@@ -500,7 +500,7 @@ No automatic external acquisition. No provider credentials created in this roadm
 
 Reuse RAGpack v1.3, `spec-audit-pipeline.md`, `spec-g3-promotion-gate.md`, ADR-0003 G1–G6.
 
-**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
@@ -510,7 +510,7 @@ Reuse RAGpack v1.3, `spec-audit-pipeline.md`, `spec-g3-promotion-gate.md`, ADR-0
 | H5-AUDITCHAIN-EPISTEMIC | Extend ADR-0003 G6 to cover every epistemic step: assessment, gate approve/decline, each acquisition, each re-analysis, the handoff, Noema validation. | event taxonomy; hash-chain placement; G6 extension text; ordering guarantees. | implementation; canonical-JSON vectors (H5-TEST-AUDITCHAIN-VERIFY). | `docs/epistemic-audit-chain` | doc; complete event list; cites ADR-0003 G6; feeds Phase 6. | cross-check ADR-0003, ADR-0004 §"Mapping onto governance rules G1–G6". | #34, H1-HUMANGATE-RECORD, H1-ACQUISITION-CONTRACT, H2-REANALYSIS-SEMANTICS | ADR-0003 G6; ADR-0004 §"Mapping onto governance rules" |
 | H5-SOURCE-INDEPENDENCE-TRUST | Add a source-independence/dependency signal to RAGpack trust metadata (spec only). | metadata field spec; relation to H1-SOURCE-DEP-MODEL; RAGpack version-bump plan. | pipeline implementation (H5-IMPL-PROVENANCE-DEPENDENCY). | `docs/ragpack-source-independence` | spec; version-bump plan; downstream follow-up identified. | cross-check RAGpack v1.3 schema. | H1-SOURCE-DEP-MODEL, H5-TRUST-CONTEXT-SCHEMA | ADR-0002 §3; ADR-0004 §"Source dependency analysis"; INV-10 |
 
-**Implementation & tests** (Owner: Codex CLI · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Target repo | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|---|
@@ -522,7 +522,7 @@ Reuse RAGpack v1.3, `spec-audit-pipeline.md`, `spec-g3-promotion-gate.md`, ADR-0
 
 ### 5.8 Phase 6 — Observability / Performance
 
-**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
@@ -532,7 +532,7 @@ Reuse RAGpack v1.3, `spec-audit-pipeline.md`, `spec-g3-promotion-gate.md`, ADR-0
 | H6-LATENCY-BUDGET | The Hermes latency budget, extended with Noesis assessment, re-analysis recompute, and Noema narrative budgets. | per-stage budgets incl. epistemic stages; recompute-vs-append cost note; local-first zero-remote-latency assumption. | benchmark implementation (H6-TEST-BENCHMARKS). | `docs/latency-budget-spec` | budget doc; epistemic stages included; consistent with ADR-0002 runtime principles. | manual vs ADR-0002 §"Runtime Principles". | H2-REANALYSIS-SEMANTICS, H3-NARRATIVE-CONTRACT | ADR-0002 §"Runtime Principles"; INV-9 |
 | H6-PERF-CONTRACTS | Deliver the KEEP'd Hermes performance deliverables as one contract set, updated so re-analysis is not silently cache-elided (INV-7). | policy cache design + invalidation; trust pre-computation contract; async evidence/audit write path; "recompute is not cache-elided" rule. | implementation. | `docs/performance-contracts` | contract doc; all three sub-contracts present; INV-7 protected against caching shortcuts. | cross-check ADR-0002 §"Runtime Principles", ADR-0003. | #33, H5-TRUST-CONTEXT-SCHEMA, H5-AUDITCHAIN-EPISTEMIC | ADR-0002 §"Runtime Principles"; ADR-0003; INV-7, INV-9 |
 
-**Implementation & tests** (Owner: Codex CLI · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Target repo | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|---|
@@ -543,17 +543,17 @@ Reuse RAGpack v1.3, `spec-audit-pipeline.md`, `spec-g3-promotion-gate.md`, ADR-0
 
 ### 5.9 Phase 7 — Multi-model Orchestration
 
-**Specs / ADRs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Specs / ADRs** (Owner: Claude CLI · Target: `rag-fish/RAGfish` · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|
 | H7-ROUTE-CONTRACT-V1 — ADR-0007 (Noema) | Evolve the Route Contract to declare investigation vs. not, external-acquisition-in-scope-pending-Human-Gate, and carry `investigation_id`; fix Route Contract v1 as an ADR. | ADR-0007 + contract doc; fields: selected path, why, confidence, trust context, approval requirements, investigation flag, acquisition-in-scope-pending-gate, `investigation_id`; "declares, does not execute" preserved. | implementation; transport/serialization (future ADR). | `docs/adr-0007-route-contract-v1` | ADR + contract merged; ADR-0002 §4 semantics preserved + extended; maps onto the epistemic lifecycle. | cross-check ADR-0002 §4, ADR-0004 §"Mapping onto the nine-stage pipeline". | #33, #34, H1-ADR-ACQ-LOCUS | ADR-0002 §4; ADR-0004 §"Route Contract"; INV-6, INV-9 |
 | H7-EXEC-MODE-POLICY | The Hermes execution-mode policy (local/remote/tool/human) + the rule that external acquisition is never a selectable mode without a Human Gate approval. | selection criteria; acquisition-exclusion rule; human-executor mode. | implementation. | `docs/execution-mode-policy` | policy doc; acquisition-exclusion rule explicit. | cross-check ADR-0002 §5, INV-6. | H7-ROUTE-CONTRACT-V1 | ADR-0002 §5; INV-6 |
 | H7-LOCAL-FIRST-OPTIN | Reaffirm and specify INV-9: local default and non-degraded; remote opt-in; never a silent fallback. | default-path spec; opt-in trigger; no-silent-fallback rule; zero-runtime-human-gate for ordinary queries preserved. | implementation. | `docs/local-first-remote-optin` | contract doc; consistent with ADR-0001, ADR-0003. | cross-check ADR-0003 §"governance without runtime humans". | H7-ROUTE-CONTRACT-V1 | ADR-0001; ADR-0003 §"governance without runtime humans"; INV-9 |
-| H7-ROUTING-AUTHORITY-INVARIANT — ADR-0008 (Noema) | Record that orchestration/routing never gains execution or acquisition authority and can never bypass the Human Gate. | invariant statement; relation to ADR-0000 §2/§6 and ADR-0004 INV-6; enforcement note. | implementation. | `docs/adr-0008-routing-authority` | ADR merged; invariant explicit and testable (feeds H7-TEST-NO-GATE-BYPASS-INTEGRATION). | Max sign-off; cross-check ADR-0000 Anti-Patterns §6. | H7-ROUTE-CONTRACT-V1, H4-APPROVAL-ENFORCEMENT | ADR-0000 §2, §6; ADR-0004 I3, I8; INV-6 |
+| H7-ROUTING-AUTHORITY-INVARIANT — ADR-0008 (Noema) | Record that orchestration/routing never gains execution or acquisition authority and can never bypass the Human Gate. | invariant statement; relation to ADR-0000 §2/§6 and ADR-0004 INV-6; enforcement note. | implementation. | `docs/adr-0008-routing-authority` | ADR merged; invariant explicit and testable (feeds H7-TEST-NO-GATE-BYPASS-INTEGRATION). | architecture-reviewer sign-off; cross-check ADR-0000 Anti-Patterns §6. | H7-ROUTE-CONTRACT-V1, H4-APPROVAL-ENFORCEMENT | ADR-0000 §2, §6; ADR-0004 I3, I8; INV-6 |
 | H7-PROVIDER-MODEL-SELECTION | Specify explicit, non-silent model/provider selection (ADR-0000 §6) within the evolved Route Contract. | explicit-selection rule; no silent switching/upgrade; disclosure requirement; recorded in evidence. | implementation; provider credentials. | `docs/provider-model-selection` | contract doc; consistent with ADR-0000 §6 + Anti-Pattern §2. | cross-check ADR-0000. | H7-EXEC-MODE-POLICY | ADR-0000 §6; INV-1 |
 
-**Implementation & tests** (Owner: Codex CLI · Review: Arch — Max / ChatGPT · Merge — Taka · squash):
+**Implementation & tests** (Owner: Codex CLI · Review: architecture reviewer · Merge — human governance owner · squash):
 
 | ID | Target repo | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By |
 |---|---|---|---|---|---|---|---|---|---|
@@ -571,15 +571,15 @@ implementation task is complete **and** every Phase 2–7 unit/adversarial test 
 
 | ID | Type | Target repo | Owner | Description / Objective | Scope | Out of Scope | Branch | DoD | Validation | Dependencies | Governed By | Review / Merge |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| H8-INTEGRATION-UAT-PLAN | spec | RAGfish | Claude CLI | Define how the full epistemic lifecycle is exercised end-to-end across the four repos. | scenarios covering Evidence → NOESIS → Human Gate → (acquisition) → re-analysis → `investigation_result` → NOEMA; per-repo responsibilities; entry/exit criteria; each INV mapped to ≥1 scenario. | running the UAT. | `docs/integration-uat-plan` | plan doc; every INV covered. | manual invariant coverage check. | all Phase 1–7 `spec`/`adr`/`schema` tasks merged | ADR-0004 (whole); INV-1…INV-11 | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-GOV-REGRESSION-GATE | test | RAGfish | Codex CLI | The pass/fail gate running #35's cases against the integrated system. | wire #35 cases to a runnable suite; pass = every critical invariant fails closed; CI gate. | authoring new cases (#35). | `test/governance-regression-gate` | gate defined + runnable; green required for release. | suite run against the integration build. | #35, *all Phase 2–7 `impl` + `test` tasks*, H8-INTEGRATION-UAT-PLAN | ADR-0004 I6, I7, I8; INV-2, INV-4, INV-6 | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-CAPABILITY-BOUNDARY-GATE | test | RAGfish | Codex CLI | Prove "can't rather than won't" holds in the built system. | boundary probes per INV-2/INV-4/INV-6 against the integrated build; distinguishes prompt refusal from architectural inability. | new spec authoring. | `test/capability-boundary-gate` | gate defined; every INV-4 capability probed and shown absent by architecture; green required for release. | probe run against the integration build. | #35, H3-TEST-CAPABILITY-ISOLATION, H4-TEST-FAILCLOSED-INTEGRATION, *all Phase 2–7 `impl`*, H8-INTEGRATION-UAT-PLAN | ADR-0004 I2, I6, B1–B4; INV-2 | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-INTEGRATION-UAT-RUN | test | RAGfish (coordination) | Codex CLI | Execute the cross-repository integration UAT from H8-INTEGRATION-UAT-PLAN. | run every scenario across the four repos; record pass/fail per scenario + per INV. | fixing bugs found (spawns follow-up issues). | `test/integration-uat-run` | every scenario executed; results recorded as an evidence artifact; all green required for Final UAT. | UAT scenario run report. | *all Phase 2–7 `impl` + `test` tasks*, H8-INTEGRATION-UAT-PLAN | ADR-0004 (whole); INV-1…INV-11 | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-FINAL-UAT | human | all repos | Taka | Taka's governance acceptance of the integrated system. | review the three gate reports + the UAT run report; record sign-off as an evidence artifact. | code changes. | *(review activity — no branch)* | recorded Taka sign-off; all three gates + UAT run green. | gate + run reports attached. | H8-GOV-REGRESSION-GATE, H8-CAPABILITY-BOUNDARY-GATE, H8-INTEGRATION-UAT-RUN | ADR-0000; ADR-0004 INV-1, INV-11 | Final Review / Merge Owner — Taka |
-| H8-RELEASE-TAGS | human | all repos | Taka | Tag releases across the four repos. | version tags per repo; only after Final UAT. | notes; publication. | *(tagging activity — no branch)* | tags pushed; each references the Final UAT evidence artifact. | tag review. | H8-FINAL-UAT | INV-11 | Final Review / Merge Owner — Taka |
-| H8-RELEASE-NOTES | spec | RAGfish | Claude CLI | Release notes describing the epistemic-governance capability. | changelog linking ADR-0004 → Phase 0–8 evidence; engineering framing. | posting. | `docs/release-notes-hermes` | notes merged; reference the release tags. | review vs ADR-0002 §"External Positioning". | H8-RELEASE-TAGS | ADR-0002 §"External Positioning" | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-RAGFISH-UPDATE | spec | RAGfish + rag.fish | Claude CLI | Update the rag.fish website with the release. | site page update; external positioning (no philosophy-first framing, no codename-as-descriptor). | posting to social. | `docs/ragfish-site-update` | site update drafted + merged; Taka approves deploy. | external-positioning checklist (ADR-0002). | H8-RELEASE-NOTES | ADR-0002 §"External Positioning" | Arch — Max / ChatGPT · Merge — Taka · squash |
-| H8-PUBLICATION | human | external | Taka | Post the X / LinkedIn / Facebook publication package. | X package; LinkedIn post; Facebook post; posted **only after** release tags + site update exist. | posting before release; internal codenames externally. | *(posting activity — no branch)* | posts published; content matches the approved drafts. | Taka review; external-positioning checklist. | H8-RAGFISH-UPDATE, H8-RELEASE-TAGS | ADR-0002 §"External Positioning" | Final Review / Merge Owner — Taka |
+| H8-INTEGRATION-UAT-PLAN | spec | RAGfish | Claude CLI | Define how the full epistemic lifecycle is exercised end-to-end across the four repos. | scenarios covering Evidence → NOESIS → Human Gate → (acquisition) → re-analysis → `investigation_result` → NOEMA; per-repo responsibilities; entry/exit criteria; each INV mapped to ≥1 scenario. | running the UAT. | `docs/integration-uat-plan` | plan doc; every INV covered. | manual invariant coverage check. | all Phase 1–7 `spec`/`adr`/`schema` tasks merged | ADR-0004 (whole); INV-1…INV-11 | architecture reviewer · Merge — human governance owner · squash |
+| H8-GOV-REGRESSION-GATE | test | RAGfish | Codex CLI | The pass/fail gate running #35's cases against the integrated system. | wire #35 cases to a runnable suite; pass = every critical invariant fails closed; CI gate. | authoring new cases (#35). | `test/governance-regression-gate` | gate defined + runnable; green required for release. | suite run against the integration build. | #35, *all Phase 2–7 `impl` + `test` tasks*, H8-INTEGRATION-UAT-PLAN | ADR-0004 I6, I7, I8; INV-2, INV-4, INV-6 | architecture reviewer · Merge — human governance owner · squash |
+| H8-CAPABILITY-BOUNDARY-GATE | test | RAGfish | Codex CLI | Prove "can't rather than won't" holds in the built system. | boundary probes per INV-2/INV-4/INV-6 against the integrated build; distinguishes prompt refusal from architectural inability. | new spec authoring. | `test/capability-boundary-gate` | gate defined; every INV-4 capability probed and shown absent by architecture; green required for release. | probe run against the integration build. | #35, H3-TEST-CAPABILITY-ISOLATION, H4-TEST-FAILCLOSED-INTEGRATION, *all Phase 2–7 `impl`*, H8-INTEGRATION-UAT-PLAN | ADR-0004 I2, I6, B1–B4; INV-2 | architecture reviewer · Merge — human governance owner · squash |
+| H8-INTEGRATION-UAT-RUN | test | RAGfish (coordination) | Codex CLI | Execute the cross-repository integration UAT from H8-INTEGRATION-UAT-PLAN. | run every scenario across the four repos; record pass/fail per scenario + per INV. | fixing bugs found (spawns follow-up issues). | `test/integration-uat-run` | every scenario executed; results recorded as an evidence artifact; all green required for Final UAT. | UAT scenario run report. | *all Phase 2–7 `impl` + `test` tasks*, H8-INTEGRATION-UAT-PLAN | ADR-0004 (whole); INV-1…INV-11 | architecture reviewer · Merge — human governance owner · squash |
+| H8-FINAL-UAT | human | all repos | Human governance owner | Human-governance-owner acceptance of the integrated system. | review the three gate reports + the UAT run report; record sign-off as an evidence artifact. | code changes. | *(review activity — no branch)* | recorded human-governance-owner sign-off; all three gates + UAT run green. | gate + run reports attached. | H8-GOV-REGRESSION-GATE, H8-CAPABILITY-BOUNDARY-GATE, H8-INTEGRATION-UAT-RUN | ADR-0000; ADR-0004 INV-1, INV-11 | Final Review / Merge Owner — human governance owner |
+| H8-RELEASE-TAGS | human | all repos | Human governance owner | Tag releases across the four repos. | version tags per repo; only after Final UAT. | notes; publication. | *(tagging activity — no branch)* | tags pushed; each references the Final UAT evidence artifact. | tag review. | H8-FINAL-UAT | INV-11 | Final Review / Merge Owner — human governance owner |
+| H8-RELEASE-NOTES | spec | RAGfish | Claude CLI | Release notes describing the epistemic-governance capability. | changelog linking ADR-0004 → Phase 0–8 evidence; engineering framing. | posting. | `docs/release-notes-hermes` | notes merged; reference the release tags. | review vs ADR-0002 §"External Positioning". | H8-RELEASE-TAGS | ADR-0002 §"External Positioning" | architecture reviewer · Merge — human governance owner · squash |
+| H8-RAGFISH-UPDATE | spec | RAGfish + rag.fish | Claude CLI | Update the rag.fish website with the release. | site page update; external positioning (no philosophy-first framing, no codename-as-descriptor). | posting to social. | `docs/ragfish-site-update` | site update drafted + merged; the human governance owner approves deploy. | external-positioning checklist (ADR-0002). | H8-RELEASE-NOTES | ADR-0002 §"External Positioning" | architecture reviewer · Merge — human governance owner · squash |
+| H8-PUBLICATION | human | external | Human governance owner | Post the X / LinkedIn / Facebook publication package. | X package; LinkedIn post; Facebook post; posted **only after** release tags + site update exist. | posting before release; internal codenames externally. | *(posting activity — no branch)* | posts published; content matches the approved drafts. | human governance owner review; external-positioning checklist. | H8-RAGFISH-UPDATE, H8-RELEASE-TAGS | ADR-0002 §"External Positioning" | Final Review / Merge Owner — human governance owner |
 
 ### 5.11 Charter milestone remap
 
@@ -617,12 +617,12 @@ One Owner Agent per task. Review roles are separate fields, never co-owners.
 |---|---|---|
 | **Claude CLI** | Every ADR, governance/capability contract, spec, cross-repo audit, this roadmap, release notes, site update. (37 tasks) | Reasons across the full architecture; translates decisions into durable docs. Authors ADRs; does not merge them. |
 | **Codex CLI** | Every JSON Schema (#34, H1-HUMANGATE-RECORD, H1-ACQUISITION-CONTRACT), #35, every implementation task (17), every automated test/benchmark/gate/UAT-run (15). (35 tasks) | Focused implementation, schema, tests, validators, benchmarks from a settled spec. |
-| **Taka** | Human-intrinsic tasks only: H8-FINAL-UAT, H8-RELEASE-TAGS, H8-PUBLICATION. (3 tasks) | Governance owner; release + external-communication authority; the UAT sign-off is intrinsically human. |
-| **Max / ChatGPT** | *No task ownership.* Architecture Review on every task; named sign-off on all ADRs (ADR-0005/0006/0007/0008) and on H4-APPROVAL-ENFORCEMENT. | Reviewer and task/prompt designer — not the execution owner of a GitHub task. |
+| **Human governance owner** | Human-intrinsic tasks only: H8-FINAL-UAT, H8-RELEASE-TAGS, H8-PUBLICATION. (3 tasks) | Governance owner; release + external-communication authority; the UAT sign-off is intrinsically human. |
+| **Architecture reviewer** | *No task ownership.* Architecture Review on every task; named sign-off on all ADRs (ADR-0005/0006/0007/0008) and on H4-APPROVAL-ENFORCEMENT. | Reviewer and task/prompt designer — not the execution owner of a GitHub task. |
 
-*(#35 is `test`-type and design-heavy; Owner = Codex CLI, consistent with "test design owner: Codex" already on the issue. Architecture Review: Max.)*
+*(#35 is `test`-type and design-heavy; Owner = Codex CLI, consistent with "test design owner: Codex" already on the issue. Architecture Review: architecture reviewer.)*
 
-Ownership totals: Claude 37 + Codex 35 + Taka 3 = **75**.
+Ownership totals: Claude 37 + Codex 35 + human governance owner 3 = **75**.
 
 ---
 
@@ -681,15 +681,15 @@ spec/ADR (Claude)  ──merged──▶  impl (Codex)  ──merged──▶  u
                                     │                      │
                                     └───────────┬──────────┘
                                                 ▼
-                                         H8-FINAL-UAT   (Taka)
+                                         H8-FINAL-UAT   (human governance owner)
                                                 ▼
-                                         H8-RELEASE-TAGS (Taka)
+                                         H8-RELEASE-TAGS (human governance owner)
                                                 ▼
                                          H8-RELEASE-NOTES
                                                 ▼
                                          H8-RAGFISH-UPDATE
                                                 ▼
-                                         H8-PUBLICATION  (Taka)  ◀── downstream of successful release
+                                         H8-PUBLICATION  (human governance owner)  ◀── downstream of successful release
 ```
 
 ### 8.4 Acyclicity & ordering checks
@@ -773,9 +773,9 @@ Issue creation and board population happen **after** this roadmap passes archite
 
 1. **Cross-check against ADR-0000 → ADR-0004** — §9.1. No conflicts.
 2. **Cross-check against Project Charter v2** — §6. No change required.
-3. **Cross-check against the Human-Governed Development Loop** — every task carries the 12 loop fields **plus Governed By** (§5.0); branch names follow `<type>/<short-name>`; every merge is `Final Review / Merge Owner — Taka`.
+3. **Cross-check against the Human-Governed Development Loop** — every task carries the 12 loop fields **plus Governed By** (§5.0); branch names follow `<type>/<short-name>`; every merge is `Final Review / Merge Owner — human governance owner`.
 4. **Referenced existing issues verified to exist:** #27 (open), #32 (closed/merged), #33 (open), #34 (open), #35 (open), #25/#26 (closed) — via `gh issue view`.
-5. **Every task has exactly one Owner Agent** — `Claude CLI` (37), `Codex CLI` (35), `Taka` (3); total 75. Max / ChatGPT owns nothing (reviewer only). No task lists a pair or an arrow. (§7)
+5. **Every task has exactly one Owner Agent** — `Claude CLI` (37), `Codex CLI` (35), `human governance owner` (3); total 75. The architecture reviewer owns nothing (reviewer only). No task lists a pair or an arrow. (§7)
 6. **Dependencies contain only task/artifact references** — issues, task IDs, merged ADRs. Architectural constraints are in the separate **Governed By** field. `INV-*` and `I5`-style clauses appear only under Governed By. (§5.0, §5.2–§5.10)
 7. **Implementation layer added** — 17 `impl` tasks across Phases 2–7; every one depends on its governing spec/ADR (§8.4).
 8. **Automated validation layer added** — 12 new `test`/benchmark/UAT-run tasks (plus the pre-existing #35 and the 3 Phase-8 gates). Every `impl` task has ≥1 test task depending on it.

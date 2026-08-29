@@ -2,7 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-08-28
-**Deciders:** Taka (governance owner, final reviewer, merge approver), Max / ChatGPT (architect / architecture review)
+**Deciders:** Human governance owner; Architecture reviewer
 **Author:** Claude CLI
 **Scope:** All four Noema repos — conceptual basis for the next Noema Architecture revision
 **Relationship to prior ADRs:** Extends ADR-0001, ADR-0002, ADR-0003. Does not supersede them. Does not replace the four-plane model (Policy / Knowledge / Runtime / Audit) or the nine-stage governance pipeline.
