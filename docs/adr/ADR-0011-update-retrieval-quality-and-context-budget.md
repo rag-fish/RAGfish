@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-06-17
-**Deciders:** Taka, Max (co-engineering reviewer)
+**Deciders:** Human governance owner, Architecture reviewer
 **Supersedes (partial):** the "missing-prefix" root-cause hypothesis recorded in the PR #21 audit (corrected below)
 **Scope of this update:** retrieval quality (text + embedding geometry) and multi-turn context-overflow on device. Generation-pipeline repair (PRs #107–#111) is unchanged and remains the prior body of ADR-0011.
 

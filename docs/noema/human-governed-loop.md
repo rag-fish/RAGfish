@@ -33,10 +33,10 @@ Every piece of work is proposed, scoped, assigned, executed, reviewed, and merge
 
 | Actor | Role |
 |-------|------|
-| **Max / ChatGPT** | Architect, reviewer, prompt designer |
+| **Architecture reviewer** | Architect, reviewer, prompt designer |
 | **Claude CLI** | Audit, architecture docs, broad investigation |
 | **Codex CLI** | Focused implementation, tests, small patches |
-| **Taka** | Final reviewer and merge approver |
+| **Human governance owner** | Final reviewer and merge approver |
 
 ---
 
@@ -52,8 +52,8 @@ proposed → ready → in progress → in review → merged
 | `proposed` | Idea captured; not yet scoped or assigned |
 | `ready` | Scoped, branched, assigned to an owner agent |
 | `in progress` | Owner agent is actively working |
-| `in review` | PR open; awaiting Taka's review |
-| `merged` | PR merged to main by Taka |
+| `in review` | PR open; awaiting the human governance owner's review |
+| `merged` | PR merged to main by the human governance owner |
 | `blocked` | Work halted; waiting on a dependency or decision |
 
 Transitions are managed via GitHub Project field updates (see [CLI automation](#cli-automation) below).
@@ -146,9 +146,9 @@ swift test --filter EmbeddingTests
 ```
 
 ## Review / Merge Rule
-<!-- Default: Taka reviews and merges. Override only if explicitly agreed. -->
-- Reviewer: Taka
-- Merge owner: Taka
+<!-- Default: the human governance owner reviews and merges. Override only if explicitly agreed. -->
+- Reviewer: Human governance owner
+- Merge owner: Human governance owner
 - Merge strategy: squash
 ```
 

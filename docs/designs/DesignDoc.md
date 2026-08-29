@@ -1,7 +1,7 @@
 # Design Doc: RAGfish Unified RAGpack Architecture & Private QA History
 
 ## Author
-- Taka & Max (ChatGPT)
+- Human governance owner and architecture reviewer
 
 ## Status
 - Implemented

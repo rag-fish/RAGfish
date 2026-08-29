@@ -3,7 +3,7 @@
 **Status:** Active  
 **Date:** 2026-06-28  
 **Scope:** All four Noema repos  
-**Governance owner:** Taka
+**Governance owner:** Human governance owner
 
 ---
 
@@ -144,15 +144,15 @@ The development loop is not a project management layer — it is the Noema gover
 
 | Actor | Role |
 |-------|------|
-| **Taka** | Governance owner, final reviewer, merge approver |
-| **Max / ChatGPT** | Architect, reviewer, prompt designer |
+| **Human governance owner** | Governance owner, final reviewer, merge approver |
+| **Architecture reviewer** | Architect, reviewer, prompt designer |
 | **Claude CLI** | Architecture docs, audit, broad investigation |
 | **Codex CLI** | Focused implementation, tests, small patches |
 | **GitHub Project** | Operational state machine — single source of truth for work status |
 
 ### Governance guarantee
 
-No work enters a repo without a matching Issue and PR. No merge happens without Taka's review. No architectural decision is implicit — it is recorded as an ADR.
+No work enters a repo without a matching Issue and PR. No merge happens without the human governance owner's review. No architectural decision is implicit — it is recorded as an ADR.
 
 ---
 

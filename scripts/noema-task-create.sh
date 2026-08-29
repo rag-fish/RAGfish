@@ -130,8 +130,8 @@ ${AGENT}
 \`\`\`
 
 ## Review / Merge Rule
-- Reviewer: Taka
-- Merge owner: Taka
+- Reviewer: Human governance owner
+- Merge owner: Human governance owner
 - Merge strategy: squash
 ISSUE_BODY_EOF
 )

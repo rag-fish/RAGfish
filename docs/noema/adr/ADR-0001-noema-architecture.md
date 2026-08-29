@@ -2,7 +2,7 @@
 
 **Status:** Proposed  
 **Date:** 2026-06-26  
-**Deciders:** Taka (governance owner), Max / ChatGPT (architect)  
+**Deciders:** Human governance owner, Architecture reviewer  
 **Scope:** All four Noema repos
 
 ---
@@ -85,15 +85,15 @@ Every piece of work is proposed, scoped, assigned, executed, reviewed, and merge
 
 | Actor | Role |
 |-------|------|
-| **Taka** | Final reviewer, governance owner, merge approver |
-| **Max / ChatGPT** | Architect, reviewer, prompt designer |
+| **Human governance owner** | Final reviewer, governance owner, merge approver |
+| **Architecture reviewer** | Architect, reviewer, prompt designer |
 | **Claude CLI** | Audits, architecture docs, broad investigation |
 | **Codex CLI** | Focused implementation, tests, small patches |
 | **GitHub Project** | State machine — single source of truth for work status |
 
 ### Why governance is encoded this way
 
-Governance is not enforced by automation alone. It is encoded as project state (GitHub Project board), issue evidence (scope, DoD, branch), PR evidence (linked issue, validation, reviewer), ADRs (decisions with reasoning), and human approval (Taka reviews and merges). Each layer is independently auditable.
+Governance is not enforced by automation alone. It is encoded as project state (GitHub Project board), issue evidence (scope, DoD, branch), PR evidence (linked issue, validation, reviewer), ADRs (decisions with reasoning), and human approval (the human governance owner reviews and merges). Each layer is independently auditable.
 
 This means:
 - No work is silently in progress

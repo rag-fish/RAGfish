@@ -2,7 +2,7 @@
 
 **Status:** Proposed
 **Date:** 2026-07-02 (JST)
-**Deciders:** Taka (Product Owner), Max (co-reviewer)
+**Deciders:** Human governance owner, Architecture reviewer
 **Supersedes:** extends ADR-0011 (semantic embedding, layer separation). ADR-0011 remains valid.
 **Drafted as:** ADR-0012 (v0.8 design session, 2026-07-02); renumbered into the Noema ADR lineage.
 
