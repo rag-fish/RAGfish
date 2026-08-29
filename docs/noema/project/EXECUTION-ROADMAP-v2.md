@@ -1,10 +1,12 @@
 # Project Hermes: Execution Roadmap v2
 
-**Status:** Active  
+**Status:** Superseded for future execution planning by [EXECUTION-ROADMAP-v3](EXECUTION-ROADMAP-v3.md) (2026-08-29), following the acceptance of ADR-0004. Retained unchanged as historical evidence of the original Hermes plan.  
 **Date:** 2026-06-28  
 **Scope:** All four Noema repos  
 **Governance owner:** Taka  
 **Bridges:** [Project Charter v2](PROJECT-CHARTER-v2.md) → implementation Issues
+
+> **Note (2026-08-29):** ADR-0004 (Noesis / Noema Epistemic Separation) is now the architectural baseline. The linear Phase A–F sequence below has been rebaselined into the epistemic Phase 0–8 model in [EXECUTION-ROADMAP-v3](EXECUTION-ROADMAP-v3.md). This document is not deleted — it remains the record of the pre-ADR-0004 plan. See ROADMAP-v3 § 3 for the KEEP / MOVE / REPLACE / RETIRE classification of every asset in this document.
 
 ---
 
