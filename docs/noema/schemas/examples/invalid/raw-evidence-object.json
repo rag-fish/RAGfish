@@ -1,0 +1,18 @@
+{
+  "contract_version": "0.1",
+  "investigation_id": "inv_invalid_evidence",
+  "generated_at": "2026-08-30T09:00:00Z",
+  "frozen_noesis_state": { "assessment_state_id": "ast_invalid_evidence", "artifact_id": "art_state_evidence", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "reproducibility_references": { "assessment_context_artifact_id": "art_context_evidence", "policy_artifact_id": "art_policy_evidence", "contract_artifact_ids": ["art_contract_evidence"], "provenance_artifact_ids": ["art_reproducibility_evidence"] },
+  "claims": [{ "claim_id": "clm_invalid_evidence", "statement": "Example claim." }],
+  "assessments": [{ "claim_id": "clm_invalid_evidence", "state": "supported", "rationale": "Example rationale." }],
+  "confidence": [{ "claim_id": "clm_invalid_evidence", "level": "moderate", "calibration_basis": "Example basis." }],
+  "uncertainties": [{ "claim_id": "clm_invalid_evidence", "level": "low", "description": "Example uncertainty.", "drivers": ["Example driver."] }],
+  "evidence_chain_summaries": [{ "claim_id": "clm_invalid_evidence", "reported_source_count": 1, "independence_status": "assessed", "independent_evidence_chain_count": 1, "relationship_summary": { "supporting_chains": 1, "contradicting_chains": 0, "mixed_chains": 0, "unclear_chains": 0 }, "provenance_artifact_ids": ["art_provenance_evidence"] }],
+  "raw_evidence": [{ "content": "Raw evidence must never cross the handoff." }],
+  "competing_hypotheses": [],
+  "recommendations": [],
+  "human_approval_references": [],
+  "human_judgment_references": [],
+  "trace_references": ["art_trace_evidence"]
+}
