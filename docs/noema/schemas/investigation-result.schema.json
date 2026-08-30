@@ -9,7 +9,7 @@
     "contract_version",
     "investigation_id",
     "generated_at",
-    "approved_noesis_state",
+    "frozen_noesis_state",
     "reproducibility_references",
     "claims",
     "assessments",
@@ -26,7 +26,7 @@
     "contract_version": { "const": "0.1" },
     "investigation_id": { "$ref": "#/$defs/investigationId" },
     "generated_at": { "type": "string", "format": "date-time" },
-    "approved_noesis_state": { "$ref": "#/$defs/approvedNoesisState" },
+    "frozen_noesis_state": { "$ref": "#/$defs/frozenNoesisState" },
     "reproducibility_references": { "$ref": "#/$defs/reproducibilityReferences" },
     "claims": {
       "type": "array",
@@ -98,9 +98,10 @@
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     },
-    "approvedNoesisState": {
+    "frozenNoesisState": {
       "type": "object",
       "additionalProperties": false,
+      "description": "The immutable NOESIS assessment artifact handed to NOEMA. Freezing this state does not imply Human Gate approval.",
       "required": ["assessment_state_id", "artifact_id", "sha256"],
       "properties": {
         "assessment_state_id": {
@@ -296,8 +297,8 @@
     "humanApprovalReference": {
       "type": "object",
       "additionalProperties": false,
-      "description": "A traceable reference, not the full Human Gate acquisition record.",
-      "required": ["approval_reference_id", "approval_artifact_id", "outcome", "approved_by", "scope", "recorded_at"],
+      "description": "A traceable Human Gate decision reference, not the full acquisition record. The outcome may be approved or declined, and the decision owner is always human.",
+      "required": ["approval_reference_id", "approval_artifact_id", "outcome", "decided_by", "scope", "recorded_at"],
       "properties": {
         "approval_reference_id": {
           "type": "string",
@@ -305,7 +306,7 @@
         },
         "approval_artifact_id": { "$ref": "#/$defs/artifactId" },
         "outcome": { "enum": ["approved", "declined"] },
-        "approved_by": {
+        "decided_by": {
           "type": "object",
           "additionalProperties": false,
           "required": ["identity_type", "subject_id"],

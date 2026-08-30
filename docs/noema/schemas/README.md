@@ -36,13 +36,16 @@ The schema deliberately keeps these concepts separate:
   single explanation.
 - `recommendations`: advisory actions linked to existing claims and, where applicable, approval
   references. A recommendation is not a governance decision.
-- `human_approval_references`: minimal, scoped, traceable references whose owner is structurally
-  human-only. This is not the full Human Gate acquisition-record schema.
+- `human_approval_references`: minimal, scoped, traceable approval-or-decline references whose
+  `decided_by` identity is structurally human-only. This is not the full Human Gate
+  acquisition-record schema.
 - `human_judgment_references`: independent human judgment, including disagreement. Such judgment
   does not edit NOESIS assessment or confidence.
-- `approved_noesis_state`, `reproducibility_references`, and `trace_references`: the frozen
-  source-state plus assessment-context, policy, contract, provenance, and audit artifact
-  references needed to reconstruct the handoff without embedding raw evidence.
+- `frozen_noesis_state`, `reproducibility_references`, and `trace_references`: the immutable
+  NOESIS assessment artifact handed to NOEMA, plus assessment-context, policy, contract,
+  provenance, and audit artifact references needed to reconstruct the handoff without embedding
+  raw evidence. Frozen state identifies handoff immutability; it is distinct from Human Gate
+  approval and does not imply that an ordinary grounded query passed a Human Gate.
 
 Reproducibility is required; a specific implementation mechanism is not. The handoff does not
 require a model, embedder, engine, algorithm, provider, framework, or runtime to exist. A concrete
@@ -62,8 +65,8 @@ makes absence explicit and keeps the handoff shape stable.
   or store handles are rejected;
 - the bounded assessment, confidence, uncertainty, independence, hypothesis, approval-outcome,
   and human-judgment vocabularies;
-- human approval ownership has `identity_type: human`; AI/model/service ownership is
-  unrepresentable;
+- every approval or decline has `outcome: approved | declined`, and its `decided_by` owner has
+  `identity_type: human`; AI/model/service decision ownership is unrepresentable;
 - confidence is a calibrated ordinal object, not an arbitrary number or string;
 - independent-chain count is `null` exactly when independence is `unknown`;
 - local uniqueness within arrays of scalar references through `uniqueItems`.
@@ -91,7 +94,7 @@ handoff/presentation validator MUST enforce:
    `independent_evidence_chain_count`; that count cannot exceed `reported_source_count`.
 7. Claim, hypothesis, recommendation, approval-reference, and human-judgment-reference IDs are
    unique in their respective collections.
-8. `approved_noesis_state.sha256` matches the canonical frozen NOESIS assessment artifact and the
+8. `frozen_noesis_state.sha256` matches the canonical immutable NOESIS assessment artifact and the
    referenced trace/audit chain.
 
 The consumer MUST treat the payload as read-only. Runtime isolation, credential removal, endpoint

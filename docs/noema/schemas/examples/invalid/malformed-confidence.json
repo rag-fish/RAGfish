@@ -2,7 +2,7 @@
   "contract_version": "0.1",
   "investigation_id": "inv_invalid_confidence",
   "generated_at": "2026-08-30T09:00:00Z",
-  "approved_noesis_state": { "assessment_state_id": "ast_invalid_confidence", "artifact_id": "art_state_confidence", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "frozen_noesis_state": { "assessment_state_id": "ast_invalid_confidence", "artifact_id": "art_state_confidence", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
   "reproducibility_references": { "assessment_context_artifact_id": "art_context_confidence", "policy_artifact_id": "art_policy_confidence", "contract_artifact_ids": ["art_contract_confidence"], "provenance_artifact_ids": ["art_reproducibility_confidence"] },
   "claims": [{ "claim_id": "clm_invalid_confidence", "statement": "Example claim." }],
   "assessments": [{ "claim_id": "clm_invalid_confidence", "state": "supported", "rationale": "Example rationale." }],

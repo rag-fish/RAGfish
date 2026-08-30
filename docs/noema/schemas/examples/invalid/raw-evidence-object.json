@@ -2,7 +2,7 @@
   "contract_version": "0.1",
   "investigation_id": "inv_invalid_evidence",
   "generated_at": "2026-08-30T09:00:00Z",
-  "approved_noesis_state": { "assessment_state_id": "ast_invalid_evidence", "artifact_id": "art_state_evidence", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "frozen_noesis_state": { "assessment_state_id": "ast_invalid_evidence", "artifact_id": "art_state_evidence", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
   "reproducibility_references": { "assessment_context_artifact_id": "art_context_evidence", "policy_artifact_id": "art_policy_evidence", "contract_artifact_ids": ["art_contract_evidence"], "provenance_artifact_ids": ["art_reproducibility_evidence"] },
   "claims": [{ "claim_id": "clm_invalid_evidence", "statement": "Example claim." }],
   "assessments": [{ "claim_id": "clm_invalid_evidence", "state": "supported", "rationale": "Example rationale." }],

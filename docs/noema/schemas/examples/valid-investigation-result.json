@@ -2,7 +2,7 @@
   "contract_version": "0.1",
   "investigation_id": "inv_example_001",
   "generated_at": "2026-08-30T09:00:00Z",
-  "approved_noesis_state": {
+  "frozen_noesis_state": {
     "assessment_state_id": "ast_example_001",
     "artifact_id": "art_noesis_state_001",
     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -85,7 +85,7 @@
       "approval_reference_id": "apr_example_001",
       "approval_artifact_id": "art_human_approval_001",
       "outcome": "approved",
-      "approved_by": {
+      "decided_by": {
         "identity_type": "human",
         "subject_id": "human-governance-owner-example"
       },
