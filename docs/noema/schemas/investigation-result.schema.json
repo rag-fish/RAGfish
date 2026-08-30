@@ -10,7 +10,7 @@
     "investigation_id",
     "generated_at",
     "approved_noesis_state",
-    "version_pins",
+    "reproducibility_references",
     "claims",
     "assessments",
     "confidence",
@@ -27,7 +27,7 @@
     "investigation_id": { "$ref": "#/$defs/investigationId" },
     "generated_at": { "type": "string", "format": "date-time" },
     "approved_noesis_state": { "$ref": "#/$defs/approvedNoesisState" },
-    "version_pins": { "$ref": "#/$defs/versionPins" },
+    "reproducibility_references": { "$ref": "#/$defs/reproducibilityReferences" },
     "claims": {
       "type": "array",
       "minItems": 1,
@@ -111,14 +111,32 @@
         "sha256": { "$ref": "#/$defs/sha256" }
       }
     },
-    "versionPins": {
+    "reproducibilityReferences": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["embedder_id", "model_id", "manifest_sha256"],
+      "description": "Implementation-neutral references sufficient to reconstruct the assessment context. Referenced artifacts may record concrete implementation versions, but this contract does not require any particular mechanism.",
+      "required": [
+        "assessment_context_artifact_id",
+        "policy_artifact_id",
+        "contract_artifact_ids",
+        "provenance_artifact_ids"
+      ],
       "properties": {
-        "embedder_id": { "$ref": "#/$defs/nonEmptyString" },
-        "model_id": { "$ref": "#/$defs/nonEmptyString" },
-        "manifest_sha256": { "$ref": "#/$defs/sha256" }
+        "execution_context_artifact_id": { "$ref": "#/$defs/artifactId" },
+        "assessment_context_artifact_id": { "$ref": "#/$defs/artifactId" },
+        "policy_artifact_id": { "$ref": "#/$defs/artifactId" },
+        "contract_artifact_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/artifactId" }
+        },
+        "provenance_artifact_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/artifactId" }
+        }
       }
     },
     "claim": {

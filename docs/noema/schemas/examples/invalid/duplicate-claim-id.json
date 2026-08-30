@@ -3,7 +3,7 @@
   "investigation_id": "inv_invalid_duplicate",
   "generated_at": "2026-08-30T09:00:00Z",
   "approved_noesis_state": { "assessment_state_id": "ast_invalid_duplicate", "artifact_id": "art_state_duplicate", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
-  "version_pins": { "embedder_id": "example", "model_id": "example", "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+  "reproducibility_references": { "assessment_context_artifact_id": "art_context_duplicate", "policy_artifact_id": "art_policy_duplicate", "contract_artifact_ids": ["art_contract_duplicate"], "provenance_artifact_ids": ["art_reproducibility_duplicate"] },
   "claims": [
     { "claim_id": "clm_duplicate", "statement": "First statement." },
     { "claim_id": "clm_duplicate", "statement": "Silent replacement attempt." }

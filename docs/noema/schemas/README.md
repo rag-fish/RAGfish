@@ -40,9 +40,13 @@ The schema deliberately keeps these concepts separate:
   human-only. This is not the full Human Gate acquisition-record schema.
 - `human_judgment_references`: independent human judgment, including disagreement. Such judgment
   does not edit NOESIS assessment or confidence.
-- `approved_noesis_state`, `version_pins`, and `trace_references`: the frozen source-state,
-  model/embedder/manifest pins required by G2, and audit artifacts needed to reconstruct the
-  handoff without embedding raw evidence.
+- `approved_noesis_state`, `reproducibility_references`, and `trace_references`: the frozen
+  source-state plus assessment-context, policy, contract, provenance, and audit artifact
+  references needed to reconstruct the handoff without embedding raw evidence.
+
+Reproducibility is required; a specific implementation mechanism is not. The handoff does not
+require a model, embedder, engine, algorithm, provider, framework, or runtime to exist. A concrete
+implementation may record any such versions inside the referenced context or provenance artifacts.
 
 All top-level collections are present, even when optional-in-context collections are empty. This
 makes absence explicit and keeps the handoff shape stable.
@@ -52,6 +56,8 @@ makes absence explicit and keeps the handoff shape stable.
 ### Schema-enforceable
 
 - the contract version, required fields, identifier shapes, timestamp shapes, and SHA-256 shapes;
+- implementation-neutral assessment-context, policy, contract, and provenance artifact references
+  required for reproducibility;
 - closed objects: undeclared fields such as `verified`, `raw_evidence`, credentials, endpoints,
   or store handles are rejected;
 - the bounded assessment, confidence, uncertainty, independence, hypothesis, approval-outcome,
@@ -105,8 +111,9 @@ Validate syntax and examples with any JSON Schema Draft 2020-12 implementation t
 ## Architectural alignment
 
 This contract implements ADR-0004 I5/I6/I8, Governance Contract §6/§8, Capability Matrix rows
-1–13, and Roadmap v3 Phase 0 #34. It preserves trust ≠ confidence, recompute-not-patch semantics,
-human-only approval ownership, and the one-directional `investigation_result` boundary.
+1–13, and Roadmap v3 Phase 0 #34. It preserves trust ≠ confidence, reproducibility without an
+implementation mandate, recompute-not-patch semantics, human-only approval ownership, and the
+one-directional `investigation_result` boundary.
 
 ## Change policy
 

@@ -3,7 +3,7 @@
   "investigation_id": "inv_invalid_assessment",
   "generated_at": "2026-08-30T09:00:00Z",
   "approved_noesis_state": { "assessment_state_id": "ast_invalid_assessment", "artifact_id": "art_state_assessment", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
-  "version_pins": { "embedder_id": "example", "model_id": "example", "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+  "reproducibility_references": { "assessment_context_artifact_id": "art_context_assessment", "policy_artifact_id": "art_policy_assessment", "contract_artifact_ids": ["art_contract_assessment"], "provenance_artifact_ids": ["art_reproducibility_assessment"] },
   "claims": [{ "claim_id": "clm_invalid_assessment", "statement": "Example claim." }],
   "assessments": [{ "claim_id": "clm_invalid_assessment", "state": "verified", "rationale": "Example rationale." }],
   "confidence": [{ "claim_id": "clm_invalid_assessment", "level": "moderate", "calibration_basis": "Example basis." }],

@@ -7,10 +7,12 @@
     "artifact_id": "art_noesis_state_001",
     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "version_pins": {
-    "embedder_id": "embedder-example-v1",
-    "model_id": "assessment-model-example-v1",
-    "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  "reproducibility_references": {
+    "execution_context_artifact_id": "art_execution_context_001",
+    "assessment_context_artifact_id": "art_assessment_context_001",
+    "policy_artifact_id": "art_policy_context_001",
+    "contract_artifact_ids": ["art_investigation_contract_001"],
+    "provenance_artifact_ids": ["art_reproducibility_provenance_001"]
   },
   "claims": [
     {
