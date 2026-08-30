@@ -50,8 +50,8 @@ NOEMA).
 | 8 | Access external-API credentials | COND `[n8]` | **NO** `CRED` | **NO** `CRED` | YES (approved scope; out-of-band) | **NO** `CRED,EP` (B4) | **COND — ADR-0005** `[n7]` |
 | 9 | Access evidence-store credentials | COND `[n8]` | **YES** (reads the corpus, `I2`) | **NO** `CRED` | COND — write path for approved evidence `[n9]` | **NO** `CRED` (B4) | **NO** — not granted |
 | 10 | Perform retrieval (over user-owned corpus) | YES (app surface) | **YES** (corpus only, `I2`) | **NO** `BIND` | N/A `[n10]` | **NO** `BIND` (B4) | **NO** (not a retrieval layer) |
-| 11 | Introduce new factual claims | YES (own judgment) | **YES** (from evidence; stable claim ID) | **NO** | **NO** (returns evidence, ≠ asserts) | **NO** `VAL,SCH` `(b)` | **NO** |
-| 12 | Modify claim confidence | YES (may override/annotate) | **YES** (sole calibrator; set once over all evidence) | **NO** | **NO** (triggers recompute; Noesis re-sets) | **NO** `VAL` `(c)` | **NO** |
+| 11 | Introduce new factual claims | YES — recorded as independent human judgment, not an edit to `investigation_result` `[n16]` | **YES** (from evidence; stable claim ID) | **NO** | **NO** (returns evidence, ≠ asserts) | **NO** `VAL,SCH` `(b)` | **NO** |
+| 12 | Modify claim confidence (in investigation state / `investigation_result`) | **NO** `[n16]` | **YES** (sole calibrator / sole setter; set once over all evidence) | **NO** | **NO** (triggers recompute; Noesis re-sets) | **NO** `VAL` `(c)` | **NO** |
 | 13 | Increase confidence during presentation | N/A `[n11]` | N/A (does not present) | N/A | N/A | **NO** `VAL` — ceiling = `investigation_result` value `(c)` | N/A |
 | 14 | Produce narrative / presentation | COND `[n12]` | **NO** (produces `investigation_result`, ≠ narrative) | **NO** | **NO** | **YES** (sole producer, `I6`) | **COND — ADR-0006** `[n2]` |
 | 15 | Approve governance decision | **YES** (sovereign — `I11`, `I12`) `HUM` | **NO** (advisory only, `I11`) | **NO** (checkpoint, ≠ authority) | **NO** | **NO** | **NO** ("execute, not decide") |
@@ -79,11 +79,12 @@ uncertainty through unchanged.
 - `[n8]` **Human / credential access — COND.** The operator manages provider and evidence-store credentials **out of band**; they are never injected into an AI layer marked `CRED`-absent.
 - `[n9]` **External Acquisition / evidence-store credentials — COND.** A **write path** for the approved acquired evidence only, within scope — not a general credential. The read side stays NOESIS-only (row 1).
 - `[n10]` **External Acquisition / retrieval — N/A.** It **fetches external sources**; that is not "retrieval" over the user-owned corpus (row 10 / NOESIS = YES only).
-- `[n11]` **Human / increase confidence during presentation — N/A.** "During presentation" is the NOEMA narrative step; the human is not an actor inside it. Overriding a stated confidence in one's **own judgment** is row 12 / Human = YES.
+- `[n11]` **Human / increase confidence during presentation — N/A.** "During presentation" is the NOEMA narrative step; the human is not an actor inside it. A human may record an independent judgment that differs from the Noesis confidence — this does not mutate the assessment artifact; see `[n16]`.
 - `[n12]` **Human / produce narrative — COND.** A human may write their own prose; the **system's** narrative capability is NOEMA-only (row 14).
 - `[n13]` **noema-agent / route execution — COND.** `noema-agent` **forms** the Route Contract — *declares* the proposed path with justification; it does **not** finalize routing without a human approval when one is declared required (ADR-0000 §2; ADR-0002 §4). Routing **authority** stays with the human (row 16 / Human = YES).
 - `[n14]` **Mutate audit history — NO for every actor, the human included.** The audit chain is append-only and hash-chained (ADR-0003 Audit plane, G6). A missing or altered event invalidates the run.
 - `[n15]` **Human / emit audit events — N/A.** Governed **human decisions** (Gate approvals, routing authorizations, overrides) are **recorded by the runtime**; the human is the *subject* of the event, not the emitter.
+- `[n16]` **Human / modify claim confidence — NO.** The Noesis-calibrated confidence and assessment states, once written into investigation state / `investigation_result`, are **not** editable by any actor — the human included. A human may **express, record, or act on** an independent human judgment, **including disagreement with the Noesis confidence**, but this is recorded as the human's own judgment and does **not** mutate the Noesis-calibrated assessment artifact. **Core distinction: a human may disagree with the assessment; a human does not rewrite the assessment.** Noesis remains the sole owner and sole setter of the calibrated assessment state (row 3, row 12 / NOESIS = YES; contract §4.2).
 
 ---
 
