@@ -1,0 +1,17 @@
+{
+  "contract_version": "0.1",
+  "investigation_id": "inv_invalid_assessment",
+  "generated_at": "2026-08-30T09:00:00Z",
+  "approved_noesis_state": { "assessment_state_id": "ast_invalid_assessment", "artifact_id": "art_state_assessment", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "version_pins": { "embedder_id": "example", "model_id": "example", "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+  "claims": [{ "claim_id": "clm_invalid_assessment", "statement": "Example claim." }],
+  "assessments": [{ "claim_id": "clm_invalid_assessment", "state": "verified", "rationale": "Example rationale." }],
+  "confidence": [{ "claim_id": "clm_invalid_assessment", "level": "moderate", "calibration_basis": "Example basis." }],
+  "uncertainties": [{ "claim_id": "clm_invalid_assessment", "level": "low", "description": "Example uncertainty.", "drivers": ["Example driver."] }],
+  "evidence_chain_summaries": [{ "claim_id": "clm_invalid_assessment", "reported_source_count": 1, "independence_status": "assessed", "independent_evidence_chain_count": 1, "relationship_summary": { "supporting_chains": 1, "contradicting_chains": 0, "mixed_chains": 0, "unclear_chains": 0 }, "provenance_artifact_ids": ["art_provenance_assessment"] }],
+  "competing_hypotheses": [],
+  "recommendations": [],
+  "human_approval_references": [],
+  "human_judgment_references": [],
+  "trace_references": ["art_trace_assessment"]
+}

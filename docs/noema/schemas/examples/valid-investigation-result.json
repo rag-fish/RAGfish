@@ -1,0 +1,109 @@
+{
+  "contract_version": "0.1",
+  "investigation_id": "inv_example_001",
+  "generated_at": "2026-08-30T09:00:00Z",
+  "approved_noesis_state": {
+    "assessment_state_id": "ast_example_001",
+    "artifact_id": "art_noesis_state_001",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "version_pins": {
+    "embedder_id": "embedder-example-v1",
+    "model_id": "assessment-model-example-v1",
+    "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "claims": [
+    {
+      "claim_id": "clm_example_001",
+      "statement": "The observed condition is associated with the documented outcome."
+    }
+  ],
+  "assessments": [
+    {
+      "claim_id": "clm_example_001",
+      "state": "partially_supported",
+      "rationale": "Multiple reports support an association, but they do not establish a complete causal explanation."
+    }
+  ],
+  "confidence": [
+    {
+      "claim_id": "clm_example_001",
+      "level": "moderate",
+      "calibration_basis": "Two assessed independent chains support the association; one chain reports mixed results."
+    }
+  ],
+  "uncertainties": [
+    {
+      "claim_id": "clm_example_001",
+      "level": "moderate",
+      "description": "The direction and size of the association remain uncertain.",
+      "drivers": [
+        "The available reports use different measurement windows.",
+        "One evidence chain has mixed findings."
+      ]
+    }
+  ],
+  "evidence_chain_summaries": [
+    {
+      "claim_id": "clm_example_001",
+      "reported_source_count": 5,
+      "independence_status": "assessed",
+      "independent_evidence_chain_count": 3,
+      "relationship_summary": {
+        "supporting_chains": 2,
+        "contradicting_chains": 0,
+        "mixed_chains": 1,
+        "unclear_chains": 0
+      },
+      "provenance_artifact_ids": [
+        "art_provenance_summary_001",
+        "art_dependency_analysis_001"
+      ]
+    }
+  ],
+  "competing_hypotheses": [
+    {
+      "hypothesis_id": "hyp_example_001",
+      "statement": "A shared contextual factor explains part of the observed association.",
+      "related_claim_ids": ["clm_example_001"],
+      "status": "plausible"
+    }
+  ],
+  "recommendations": [
+    {
+      "recommendation_id": "rec_example_001",
+      "text": "Present the association with the stated uncertainty and avoid a causal conclusion.",
+      "related_claim_ids": ["clm_example_001"],
+      "advisory_status": "advisory",
+      "approval_reference_ids": []
+    }
+  ],
+  "human_approval_references": [
+    {
+      "approval_reference_id": "apr_example_001",
+      "approval_artifact_id": "art_human_approval_001",
+      "outcome": "approved",
+      "approved_by": {
+        "identity_type": "human",
+        "subject_id": "human-governance-owner-example"
+      },
+      "scope": {
+        "scope_id": "scp_acquisition_001",
+        "description": "Approval for the specific external acquisition recorded by art_human_approval_001."
+      },
+      "recorded_at": "2026-08-30T08:55:00Z"
+    }
+  ],
+  "human_judgment_references": [
+    {
+      "judgment_reference_id": "hjr_example_001",
+      "judgment_artifact_id": "art_human_judgment_001",
+      "related_claim_ids": ["clm_example_001"],
+      "relationship": "supplements"
+    }
+  ],
+  "trace_references": [
+    "art_audit_trace_001",
+    "art_assessment_trace_001"
+  ]
+}

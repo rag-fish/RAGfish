@@ -1,0 +1,335 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rag.fish/schemas/investigation-result-0.1.json",
+  "title": "investigation_result v0.1",
+  "description": "The sole machine-readable NOESIS to NOEMA handoff. It contains calibrated advisory findings and references, never raw evidence or evidence-access capability.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "investigation_id",
+    "generated_at",
+    "approved_noesis_state",
+    "version_pins",
+    "claims",
+    "assessments",
+    "confidence",
+    "uncertainties",
+    "evidence_chain_summaries",
+    "competing_hypotheses",
+    "recommendations",
+    "human_approval_references",
+    "human_judgment_references",
+    "trace_references"
+  ],
+  "properties": {
+    "contract_version": { "const": "0.1" },
+    "investigation_id": { "$ref": "#/$defs/investigationId" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "approved_noesis_state": { "$ref": "#/$defs/approvedNoesisState" },
+    "version_pins": { "$ref": "#/$defs/versionPins" },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "assessments": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/assessment" }
+    },
+    "confidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/confidence" }
+    },
+    "uncertainties": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/uncertainty" }
+    },
+    "evidence_chain_summaries": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceChainSummary" }
+    },
+    "competing_hypotheses": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/competingHypothesis" }
+    },
+    "recommendations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/recommendation" }
+    },
+    "human_approval_references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/humanApprovalReference" }
+    },
+    "human_judgment_references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/humanJudgmentReference" }
+    },
+    "trace_references": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/artifactId" }
+    }
+  },
+  "$defs": {
+    "investigationId": {
+      "type": "string",
+      "pattern": "^inv_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "claimId": {
+      "type": "string",
+      "description": "Stable claim identity minted by NOESIS.",
+      "pattern": "^clm_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+    },
+    "artifactId": {
+      "type": "string",
+      "pattern": "^art_[A-Za-z0-9][A-Za-z0-9._-]{0,95}$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "approvedNoesisState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assessment_state_id", "artifact_id", "sha256"],
+      "properties": {
+        "assessment_state_id": {
+          "type": "string",
+          "pattern": "^ast_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "artifact_id": { "$ref": "#/$defs/artifactId" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "versionPins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["embedder_id", "model_id", "manifest_sha256"],
+      "properties": {
+        "embedder_id": { "$ref": "#/$defs/nonEmptyString" },
+        "model_id": { "$ref": "#/$defs/nonEmptyString" },
+        "manifest_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "statement"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/claimId" },
+        "statement": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "state", "rationale"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/claimId" },
+        "state": {
+          "enum": [
+            "supported",
+            "partially_supported",
+            "contradicted",
+            "unresolved",
+            "insufficient_evidence"
+          ]
+        },
+        "rationale": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "NOESIS-calibrated confidence in the assessment, expressed as an ordinal band to avoid false numeric precision. It is not evidence trust and is immutable during NOEMA presentation.",
+      "required": ["claim_id", "level", "calibration_basis"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/claimId" },
+        "level": { "enum": ["low", "moderate", "high"] },
+        "calibration_basis": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "level", "description", "drivers"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/claimId" },
+        "level": { "enum": ["low", "moderate", "high", "indeterminate"] },
+        "description": { "$ref": "#/$defs/nonEmptyString" },
+        "drivers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "evidenceChainSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim_id",
+        "reported_source_count",
+        "independence_status",
+        "independent_evidence_chain_count",
+        "relationship_summary",
+        "provenance_artifact_ids"
+      ],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/claimId" },
+        "reported_source_count": { "type": "integer", "minimum": 0 },
+        "independence_status": {
+          "enum": ["assessed", "partially_assessed", "unknown"]
+        },
+        "independent_evidence_chain_count": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "Null when independence_status is unknown. This is distinct from reported_source_count."
+        },
+        "relationship_summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["supporting_chains", "contradicting_chains", "mixed_chains", "unclear_chains"],
+          "properties": {
+            "supporting_chains": { "type": "integer", "minimum": 0 },
+            "contradicting_chains": { "type": "integer", "minimum": 0 },
+            "mixed_chains": { "type": "integer", "minimum": 0 },
+            "unclear_chains": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "provenance_artifact_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/artifactId" }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "independence_status": { "const": "unknown" } },
+            "required": ["independence_status"]
+          },
+          "then": {
+            "properties": { "independent_evidence_chain_count": { "type": "null" } }
+          },
+          "else": {
+            "properties": { "independent_evidence_chain_count": { "type": "integer" } }
+          }
+        }
+      ]
+    },
+    "competingHypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hypothesis_id", "statement", "related_claim_ids", "status"],
+      "properties": {
+        "hypothesis_id": {
+          "type": "string",
+          "pattern": "^hyp_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "statement": { "$ref": "#/$defs/nonEmptyString" },
+        "related_claim_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/claimId" }
+        },
+        "status": { "enum": ["plausible", "weakened", "not_distinguishable"] }
+      }
+    },
+    "recommendation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["recommendation_id", "text", "related_claim_ids", "advisory_status", "approval_reference_ids"],
+      "properties": {
+        "recommendation_id": {
+          "type": "string",
+          "pattern": "^rec_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "text": { "$ref": "#/$defs/nonEmptyString" },
+        "related_claim_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/claimId" }
+        },
+        "advisory_status": { "const": "advisory" },
+        "approval_reference_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^apr_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+          }
+        }
+      }
+    },
+    "humanApprovalReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A traceable reference, not the full Human Gate acquisition record.",
+      "required": ["approval_reference_id", "approval_artifact_id", "outcome", "approved_by", "scope", "recorded_at"],
+      "properties": {
+        "approval_reference_id": {
+          "type": "string",
+          "pattern": "^apr_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "approval_artifact_id": { "$ref": "#/$defs/artifactId" },
+        "outcome": { "enum": ["approved", "declined"] },
+        "approved_by": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identity_type", "subject_id"],
+          "properties": {
+            "identity_type": { "const": "human" },
+            "subject_id": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scope_id", "description"],
+          "properties": {
+            "scope_id": {
+              "type": "string",
+              "pattern": "^scp_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+            },
+            "description": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        "recorded_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "humanJudgmentReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A reference to independent human judgment, including disagreement. It never changes NOESIS assessment or confidence.",
+      "required": ["judgment_reference_id", "judgment_artifact_id", "related_claim_ids", "relationship"],
+      "properties": {
+        "judgment_reference_id": {
+          "type": "string",
+          "pattern": "^hjr_[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "judgment_artifact_id": { "$ref": "#/$defs/artifactId" },
+        "related_claim_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/claimId" }
+        },
+        "relationship": { "enum": ["agrees", "disagrees", "supplements"] }
+      }
+    }
+  }
+}
